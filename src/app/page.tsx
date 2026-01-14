@@ -615,7 +615,7 @@ function ContactSection() {
                 <div>
                   <div className="text-gray-400 text-sm">Call us</div>
                   <div className="text-white font-medium group-hover:text-primary-400 transition-colors">
-                    (601) 212-5714
+                    (769) 487-5679
                   </div>
                 </div>
               </a>
