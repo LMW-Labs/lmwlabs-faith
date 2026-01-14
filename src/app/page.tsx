@@ -554,21 +554,73 @@ function PricingSection() {
 // ============================================
 // CONTACT SECTION
 // ============================================
+const PROJECT_TYPES = [
+  { id: 'mobile', label: 'Scalable Mobile App' },
+  { id: 'webapp', label: 'Web App' },
+  { id: 'fullstack', label: 'Full Stack Scalable Apps' },
+  { id: 'ai', label: 'AI Integration' },
+  { id: 'marketing', label: 'Marketing Material & Campaigns' },
+  { id: 'social', label: 'Social Media Integration' },
+  { id: 'logo', label: 'Logo Enhancement' },
+  { id: 'monetize', label: 'Monetizing Current Site' },
+  { id: 'niche', label: 'Niche Advisement' },
+]
+
 function ContactSection() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
-    project: '',
+    projectTypes: [] as string[],
     budget: '',
     message: ''
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const toggleProjectType = (id: string) => {
+    setFormData(prev => ({
+      ...prev,
+      projectTypes: prev.projectTypes.includes(id)
+        ? prev.projectTypes.filter(t => t !== id)
+        : [...prev.projectTypes, id]
+    }))
+  }
+
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Handle form submission - integrate with Formspree or similar
-    console.log(formData)
-    alert('Thanks! We\'ll be in touch within 24 hours.')
+    setIsSubmitting(true)
+
+    // Get labels for selected project types
+    const selectedTypes = formData.projectTypes
+      .map(id => PROJECT_TYPES.find(t => t.id === id)?.label)
+      .filter(Boolean)
+      .join(', ')
+
+    try {
+      const response = await fetch('https://formspree.io/f/mqeekvgl', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          projectTypes: selectedTypes,
+          budget: formData.budget,
+          message: formData.message,
+        }),
+      })
+
+      if (response.ok) {
+        setSubmitted(true)
+        setFormData({ name: '', email: '', phone: '', projectTypes: [], budget: '', message: '' })
+      }
+    } catch (error) {
+      console.error('Form submission error:', error)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -582,10 +634,11 @@ function ContactSection() {
               Let's Talk
             </span>
             <h2 className="font-display text-4xl md:text-5xl font-bold text-white mb-6">
-              Ready to Build?
+              Your Vision Deserves<br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-accent-400">To Become Reality</span>
             </h2>
             <p className="text-gray-400 text-lg mb-8">
-              Tell us about your project. We'll get back to you within 24 hours with a game plan.
+              Stop dreaming about the app that could change everything. Let's build it together. Tell us your vision and we'll craft a roadmap to make it happen.
             </p>
 
             {/* Contact Methods */}
@@ -701,20 +754,36 @@ function ContactSection() {
               </div>
 
               <div>
-                <label className="block text-gray-400 text-sm mb-2">Project Type</label>
-                <select
-                  className="w-full px-4 py-3 rounded-xl bg-primary-900/30 border border-primary-800/30 text-white focus:border-primary-500 focus:outline-none transition-colors"
-                  value={formData.project}
-                  onChange={(e) => setFormData({ ...formData, project: e.target.value })}
-                >
-                  <option value="">What do you need?</option>
-                  <option value="website">Business Website</option>
-                  <option value="webapp">Web Application</option>
-                  <option value="mobile">Mobile App</option>
-                  <option value="ai">AI Integration</option>
-                  <option value="logistics">Logistics Software</option>
-                  <option value="other">Something Else</option>
-                </select>
+                <label className="block text-gray-400 text-sm mb-3">Project Type <span className="text-gray-500">(select all that apply)</span></label>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {PROJECT_TYPES.map((type) => (
+                    <label
+                      key={type.id}
+                      className={`flex items-center gap-2 p-3 rounded-xl cursor-pointer transition-all ${
+                        formData.projectTypes.includes(type.id)
+                          ? 'bg-primary-600/30 border-primary-500 text-white'
+                          : 'bg-primary-900/30 border-primary-800/30 text-gray-400 hover:border-primary-600/50'
+                      } border`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={formData.projectTypes.includes(type.id)}
+                        onChange={() => toggleProjectType(type.id)}
+                        className="sr-only"
+                      />
+                      <div className={`w-4 h-4 rounded flex items-center justify-center border ${
+                        formData.projectTypes.includes(type.id)
+                          ? 'bg-primary-500 border-primary-500'
+                          : 'border-gray-600'
+                      }`}>
+                        {formData.projectTypes.includes(type.id) && (
+                          <Check className="w-3 h-3 text-white" />
+                        )}
+                      </div>
+                      <span className="text-sm">{type.label}</span>
+                    </label>
+                  ))}
+                </div>
               </div>
 
               <div>
@@ -728,10 +797,21 @@ function ContactSection() {
                 />
               </div>
 
-              <button type="submit" className="btn-primary w-full flex items-center justify-center gap-2">
-                Send Message
-                <ArrowRight className="w-4 h-4" />
-              </button>
+              {submitted ? (
+                <div className="text-center py-4 px-6 rounded-xl bg-green-500/20 border border-green-500/30 text-green-400">
+                  <Check className="w-6 h-6 mx-auto mb-2" />
+                  <p className="font-medium">Message sent! We'll be in touch within 24 hours.</p>
+                </div>
+              ) : (
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isSubmitting ? 'Sending...' : 'Send Message'}
+                  {!isSubmitting && <ArrowRight className="w-4 h-4" />}
+                </button>
+              )}
             </form>
           </div>
         </div>
