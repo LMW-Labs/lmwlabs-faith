@@ -154,10 +154,10 @@ export default function TermsPage() {
                 <p>
                   For questions about these terms, please contact us at{' '}
                   <a
-                    href="mailto:contact@lmwlabs.faith"
+                    href="mailto:info@lmwlabs.faith"
                     className="text-primary-400 hover:text-primary-300"
                   >
-                    contact@lmwlabs.faith
+                    info@lmwlabs.faith
                   </a>
                   .
                 </p>

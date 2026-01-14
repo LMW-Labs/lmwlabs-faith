@@ -1,216 +1,35 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
+import Image from 'next/image'
 import {
-  Menu,
-  X,
-  ArrowRight,
+  Code2,
   Smartphone,
-  Globe,
   Brain,
   Truck,
+  Globe,
   Zap,
-  Building2,
-  Check,
   ChevronRight,
   Mail,
   Phone,
-  MapPin,
   Calendar,
-  Send,
-  Layers,
-  Database,
-  Shield,
-  TrendingUp,
+  ExternalLink,
+  Menu,
+  X,
+  Star,
+  Check,
+  ArrowRight,
+  MessageSquare,
+  BookOpen,
   Users,
-  Clock,
-  Code2,
-  Rocket,
-  Target,
+  BarChart3,
+  Shield,
+  Clock
 } from 'lucide-react'
 
-/* ============================================
-   Type Definitions
-   ============================================ */
-
-interface Project {
-  slug: string
-  title: string
-  category: string
-  description: string
-  tech: string[]
-  stats: string
-  color: string
-  gradient: string
-}
-
-interface Service {
-  icon: React.ReactNode
-  title: string
-  description: string
-  features: string[]
-}
-
-interface PricingPackage {
-  name: string
-  price: string
-  description: string
-  features: string[]
-  popular?: boolean
-}
-
-/* ============================================
-   Data
-   ============================================ */
-
-const projects: Project[] = [
-  {
-    slug: 'faithfeed',
-    title: 'FaithFeed',
-    category: 'Mobile & Web Platform',
-    description: 'Christian social media platform with AI-powered Bible study. Built to scale with 31K+ verse embeddings, real-time feeds, and RAG-based semantic search.',
-    tech: ['Flutter', 'Next.js', 'Firebase', 'OpenAI', 'Pinecone'],
-    stats: '31K+ embeddings | Real-time sync | Production-ready',
-    color: 'from-purple-500 to-indigo-600',
-    gradient: 'bg-gradient-to-br from-purple-500/20 to-indigo-600/20',
-  },
-  {
-    slug: 'basketball-scouting',
-    title: 'Basketball Scouting Platform',
-    category: 'Enterprise Web App',
-    description: 'Player prospecting system for professional scouts. Handles large video uploads, AI-powered player analysis, and scalable data pipelines.',
-    tech: ['Next.js', 'Firebase', 'Cloudflare R2', 'OpenAI'],
-    stats: 'Video processing | AI analysis | Scalable storage',
-    color: 'from-orange-500 to-red-600',
-    gradient: 'bg-gradient-to-br from-orange-500/20 to-red-600/20',
-  },
-  {
-    slug: 'khcl-logistics',
-    title: 'KHCL Logistics',
-    category: 'Logistics Platform',
-    description: 'Full-featured freight brokerage system with instant quoting, load board management, carrier tracking, and real-time GPS integration.',
-    tech: ['Next.js', 'PostgreSQL', 'Supabase', 'Real-time'],
-    stats: 'Load management | Live tracking | Multi-tenant',
-    color: 'from-emerald-500 to-teal-600',
-    gradient: 'bg-gradient-to-br from-emerald-500/20 to-teal-600/20',
-  },
-  {
-    slug: 'cooper-generations',
-    title: 'Cooper Generations Asphalt',
-    category: 'Business Website',
-    description: 'Professional website for a 35+ year asphalt company. Optimized for local SEO, lead generation, and mobile-first performance.',
-    tech: ['Next.js', 'Tailwind', 'Vercel', 'SEO'],
-    stats: 'Local SEO | Lead forms | Fast load times',
-    color: 'from-slate-500 to-zinc-600',
-    gradient: 'bg-gradient-to-br from-slate-500/20 to-zinc-600/20',
-  },
-  {
-    slug: 'blacktopproz',
-    title: 'BlacktopProz',
-    category: 'Business System',
-    description: 'Complete contractor business framework including quote system, invoicing, customer management, and operational documents.',
-    tech: ['Branding', 'Documents', 'Systems', 'Templates'],
-    stats: 'Full system | Quote automation | Scalable ops',
-    color: 'from-amber-500 to-yellow-600',
-    gradient: 'bg-gradient-to-br from-amber-500/20 to-yellow-600/20',
-  },
-]
-
-const services: Service[] = [
-  {
-    icon: <Smartphone className="w-8 h-8" />,
-    title: 'Mobile App Development',
-    description: 'Cross-platform mobile apps built with Flutter. Production-ready architecture that scales from launch to millions of users.',
-    features: ['Flutter/Dart', 'iOS & Android', 'Firebase Backend', 'Push Notifications', 'Offline-first'],
-  },
-  {
-    icon: <Globe className="w-8 h-8" />,
-    title: 'Web Applications',
-    description: 'Full-stack web applications with modern frameworks. Built for performance, security, and long-term maintainability.',
-    features: ['Next.js/React', 'TypeScript', 'PostgreSQL/Supabase', 'Authentication', 'API Development'],
-  },
-  {
-    icon: <Brain className="w-8 h-8" />,
-    title: 'AI Integration',
-    description: 'Intelligent features that add real value. From semantic search to automated workflows, we integrate AI where it matters.',
-    features: ['OpenAI/GPT-4', 'Vector Databases', 'RAG Systems', 'Embeddings', 'Custom Models'],
-  },
-  {
-    icon: <Truck className="w-8 h-8" />,
-    title: 'Logistics Software',
-    description: 'Specialized systems for freight, delivery, and supply chain. Real-time tracking, load management, and carrier integration.',
-    features: ['TMS Systems', 'Load Management', 'GPS Tracking', 'Carrier Integration', 'Rate Calculation'],
-  },
-  {
-    icon: <Zap className="w-8 h-8" />,
-    title: 'Business Automation',
-    description: 'Eliminate manual processes with custom automation. Dashboards, workflows, and integrations that save hours every week.',
-    features: ['Custom Dashboards', 'API Integrations', 'Workflow Automation', 'Reporting', 'Data Pipelines'],
-  },
-  {
-    icon: <Building2 className="w-8 h-8" />,
-    title: 'Contractor Websites',
-    description: 'High-converting websites for service businesses. Local SEO, lead capture, and professional branding that wins jobs.',
-    features: ['Local SEO', 'Quote Forms', 'Mobile Optimized', 'Fast Loading', 'Lead Generation'],
-  },
-]
-
-const pricingPackages: PricingPackage[] = [
-  {
-    name: 'Starter Website',
-    price: '$1,500',
-    description: 'Professional web presence for small businesses',
-    features: [
-      '5-7 page responsive website',
-      'Mobile-optimized design',
-      'Contact forms with notifications',
-      'Basic SEO setup',
-      'Google Analytics integration',
-      '30 days post-launch support',
-    ],
-  },
-  {
-    name: 'Custom Web App',
-    price: '$5,000+',
-    description: 'Full-featured web applications built to scale',
-    features: [
-      'Custom feature development',
-      'User authentication & roles',
-      'Database design & integration',
-      'Admin dashboard',
-      'API development',
-      '60 days post-launch support',
-    ],
-    popular: true,
-  },
-  {
-    name: 'Mobile App',
-    price: '$8,000+',
-    description: 'Cross-platform mobile apps for iOS & Android',
-    features: [
-      'Flutter cross-platform build',
-      'iOS & Android deployment',
-      'Backend API & database',
-      'Push notifications',
-      'App store submission',
-      '90 days post-launch support',
-    ],
-  },
-]
-
-const hourlyRates = [
-  { category: 'Development & Integration', rate: '$100/hr', description: 'Core coding, API work, feature development' },
-  { category: 'Design & SEO', rate: '$85/hr', description: 'UI/UX design, marketing strategy, optimization' },
-  { category: 'Setup & Project Management', rate: '$75/hr', description: 'Environment setup, planning, coordination' },
-  { category: 'Content & Training', rate: '$65/hr', description: 'Copywriting, documentation, onboarding' },
-  { category: 'Social Media', rate: '$50/hr', description: 'Content creation, posting, engagement' },
-]
-
-/* ============================================
-   Navigation Component
-   ============================================ */
-
+// ============================================
+// NAVIGATION
+// ============================================
 function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
 
@@ -222,71 +41,64 @@ function Navigation() {
   ]
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 glass-dark">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+    <nav className="fixed top-0 left-0 right-0 z-50 glass">
+      <div className="max-w-7xl mx-auto px-6 py-4">
+        <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center">
-              <Layers className="w-6 h-6 text-white" />
-            </div>
-            <span className="text-xl font-display font-bold text-white group-hover:text-primary-400 transition-colors">
-              LMW Labs
+          <a href="#" className="flex items-center gap-3">
+            <Image
+              src="/images/logo.png"
+              alt="LMW Labs"
+              width={48}
+              height={48}
+              className="w-12 h-12 object-contain"
+            />
+            <span className="font-display font-bold text-xl text-white">
+              LMW <span className="text-primary-400">Labs</span>
             </span>
-          </Link>
+          </a>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
-                className="text-gray-300 hover:text-white font-medium transition-colors"
+                className="text-gray-300 hover:text-white transition-colors font-medium"
               >
                 {link.label}
               </a>
             ))}
-            <a
-              href="#contact"
-              className="btn-primary text-sm px-6 py-3"
-            >
+            <a href="#contact" className="btn-primary text-sm">
               Get Started
-              <ArrowRight className="w-4 h-4 ml-2" />
             </a>
           </div>
 
           {/* Mobile Menu Button */}
           <button
+            className="md:hidden text-white"
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 text-gray-300 hover:text-white"
-            aria-label="Toggle menu"
           >
-            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {isOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Nav */}
         {isOpen && (
-          <div className="md:hidden py-4 border-t border-white/10">
-            <div className="flex flex-col gap-4">
-              {navLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setIsOpen(false)}
-                  className="text-gray-300 hover:text-white font-medium py-2 transition-colors"
-                >
-                  {link.label}
-                </a>
-              ))}
+          <div className="md:hidden mt-4 pb-4 border-t border-primary-800/30 pt-4">
+            {navLinks.map((link) => (
               <a
-                href="#contact"
+                key={link.href}
+                href={link.href}
+                className="block py-2 text-gray-300 hover:text-white transition-colors"
                 onClick={() => setIsOpen(false)}
-                className="btn-primary text-sm px-6 py-3 text-center mt-2"
               >
-                Get Started
+                {link.label}
               </a>
-            </div>
+            ))}
+            <a href="#contact" className="btn-primary text-sm inline-block mt-4">
+              Get Started
+            </a>
           </div>
         )}
       </div>
@@ -294,187 +106,159 @@ function Navigation() {
   )
 }
 
-/* ============================================
-   Hero Section
-   ============================================ */
-
+// ============================================
+// HERO SECTION
+// ============================================
 function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
-      {/* Background Effects */}
-      <div className="absolute inset-0 grid-pattern" />
-      <div className="blob-purple -top-40 -left-40 animate-float" />
-      <div className="blob-gold top-1/2 -right-40 animate-float" style={{ animationDelay: '3s' }} />
+    <section className="relative min-h-screen flex items-center pt-20 overflow-hidden">
+      {/* Background Elements */}
+      <div className="absolute inset-0 noise-overlay" />
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-600/20 rounded-full blur-[120px]" />
+      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-accent-500/10 rounded-full blur-[100px]" />
+      
+      {/* Grid pattern */}
+      <div className="absolute inset-0 opacity-[0.02]" style={{
+        backgroundImage: `linear-gradient(rgba(95,111,241,0.3) 1px, transparent 1px),
+                          linear-gradient(90deg, rgba(95,111,241,0.3) 1px, transparent 1px)`,
+        backgroundSize: '60px 60px'
+      }} />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="text-center max-w-4xl mx-auto">
+      <div className="relative max-w-7xl mx-auto px-6 py-20">
+        <div className="max-w-4xl">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-8 animate-fade-in-up">
-            <Rocket className="w-4 h-4 text-accent-400" />
-            <span className="text-sm font-medium text-gray-300">
-              AI-Powered Development Studio
-            </span>
+            <Zap className="w-4 h-4 text-accent-400" />
+            <span className="text-sm text-gray-300">AI-Powered Development Studio</span>
           </div>
 
           {/* Headline */}
-          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-display font-bold text-white mb-6 animate-fade-in-up delay-100">
-            We Build{' '}
-            <span className="gradient-text">Scalable Systems</span>
-            {' '}That Grow With You
+          <h1 className="font-display text-5xl md:text-7xl font-bold leading-tight mb-6 animate-fade-in-up delay-100">
+            We Build Apps That
+            <span className="block gradient-text">Move Your Business</span>
           </h1>
 
           {/* Subheadline */}
-          <p className="text-lg sm:text-xl text-gray-400 mb-10 max-w-2xl mx-auto animate-fade-in-up delay-200">
-            Not just MVPs — production-ready software built for scale.
-            From mobile apps to enterprise platforms, we deliver AI-integrated solutions
-            that handle real traffic and real business growth.
+          <p className="text-xl md:text-2xl text-gray-400 mb-10 max-w-2xl animate-fade-in-up delay-200">
+            Full-stack development with AI integration. From concept to launch in weeks, not months. 
+            Based in Mississippi, serving clients worldwide.
           </p>
 
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 animate-fade-in-up delay-300">
-            <a href="#contact" className="btn-primary w-full sm:w-auto">
+          <div className="flex flex-wrap gap-4 mb-16 animate-fade-in-up delay-300">
+            <a href="#contact" className="btn-primary inline-flex items-center gap-2">
               Start Your Project
-              <ArrowRight className="w-5 h-5 ml-2" />
+              <ArrowRight className="w-4 h-4" />
             </a>
-            <a href="#portfolio" className="btn-secondary w-full sm:w-auto">
+            <a href="#portfolio" className="btn-secondary inline-flex items-center gap-2">
               View Our Work
-              <ChevronRight className="w-5 h-5 ml-2" />
+              <ChevronRight className="w-4 h-4" />
             </a>
           </div>
 
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 animate-fade-in-up delay-400">
             {[
-              { icon: <Code2 className="w-5 h-5" />, value: '5+', label: 'Apps Shipped' },
-              { icon: <Clock className="w-5 h-5" />, value: '4 Weeks', label: 'Avg Delivery' },
-              { icon: <Brain className="w-5 h-5" />, value: '100%', label: 'AI-Enhanced' },
-              { icon: <Users className="w-5 h-5" />, value: '24/7', label: 'Support' },
-            ].map((stat, index) => (
-              <div key={index} className="card-glass text-center py-4 px-3">
-                <div className="flex items-center justify-center gap-2 text-primary-400 mb-1">
-                  {stat.icon}
-                  <span className="text-2xl font-display font-bold text-white">{stat.value}</span>
+              { value: '5+', label: 'Apps Shipped' },
+              { value: '4 Weeks', label: 'Avg. Delivery' },
+              { value: '100%', label: 'AI-Enhanced' },
+              { value: '24/7', label: 'Support' },
+            ].map((stat, i) => (
+              <div key={i} className="text-center md:text-left">
+                <div className="font-display text-3xl md:text-4xl font-bold text-white mb-1">
+                  {stat.value}
                 </div>
-                <span className="text-sm text-gray-400">{stat.label}</span>
+                <div className="text-gray-500 text-sm">{stat.label}</div>
               </div>
             ))}
           </div>
         </div>
-
-        {/* Bottom Highlight */}
-        <div className="mt-20 text-center animate-fade-in-up delay-500">
-          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full glass">
-            <Target className="w-5 h-5 text-accent-400" />
-            <span className="text-gray-300">
-              <span className="text-white font-semibold">Brandon, Mississippi</span> — Serving clients nationwide
-            </span>
-          </div>
-        </div>
       </div>
     </section>
   )
 }
 
-/* ============================================
-   Why Scalable Section
-   ============================================ */
-
-function WhyScalableSection() {
-  const points = [
+// ============================================
+// SERVICES SECTION
+// ============================================
+function ServicesSection() {
+  const services = [
     {
-      icon: <Database className="w-6 h-6" />,
-      title: 'Production Architecture',
-      description: 'Every system is designed with proper database schemas, caching layers, and API structures that handle growth.',
+      icon: Smartphone,
+      title: 'Mobile App Development',
+      description: 'Cross-platform iOS & Android apps built with Flutter. Native performance, single codebase.',
+      features: ['Flutter/Dart', 'Firebase Backend', 'Push Notifications', 'App Store Deployment']
     },
     {
-      icon: <Shield className="w-6 h-6" />,
-      title: 'Security Built-In',
-      description: 'Authentication, authorization, data encryption, and security best practices from day one — not bolted on later.',
+      icon: Globe,
+      title: 'Web Applications',
+      description: 'Modern, fast web apps and platforms. From landing pages to full SaaS products.',
+      features: ['Next.js/React', 'TypeScript', 'Responsive Design', 'SEO Optimized']
     },
     {
-      icon: <TrendingUp className="w-6 h-6" />,
-      title: 'Ready to Scale',
-      description: 'Whether you have 100 users or 100,000, our systems are architected to handle real-world traffic and data.',
+      icon: Brain,
+      title: 'AI Integration',
+      description: 'GPT-4, embeddings, RAG systems. Make your app intelligent.',
+      features: ['OpenAI Integration', 'Vector Databases', 'Semantic Search', 'Custom AI Features']
     },
     {
-      icon: <Zap className="w-6 h-6" />,
-      title: 'Performance First',
-      description: 'Optimized queries, efficient caching, lazy loading, and smart data fetching keep your apps fast at any scale.',
+      icon: Truck,
+      title: 'Logistics Software',
+      description: '8+ years in freight. We know the industry and build tools that actually work.',
+      features: ['TMS Platforms', 'Load Management', 'GPS Tracking', 'API Integrations']
+    },
+    {
+      icon: Code2,
+      title: 'Business Automation',
+      description: 'Stop doing things manually. Automate workflows, reports, and processes.',
+      features: ['Custom Dashboards', 'API Development', 'Data Integration', 'Workflow Automation']
+    },
+    {
+      icon: BarChart3,
+      title: 'Contractor Websites',
+      description: 'Professional sites for trades businesses. SEO, lead capture, instant quotes.',
+      features: ['Local SEO', 'Quote Forms', 'Mobile-First', 'Google Business']
     },
   ]
 
   return (
-    <section className="py-20 section-alt relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="services" className="py-24 section-gradient relative">
+      <div className="absolute inset-0 noise-overlay" />
+      <div className="relative max-w-7xl mx-auto px-6">
+        {/* Header */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-display font-bold text-white mb-4">
-            Why <span className="gradient-text">Scalable Systems</span> Matter
-          </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">
-            MVPs get you started. Scalable systems get you to market and keep you there.
-            We build software that works today and grows with your business tomorrow.
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {points.map((point, index) => (
-            <div key={index} className="card hover-lift">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500/20 to-accent-500/20 flex items-center justify-center mb-4">
-                <div className="text-primary-400">{point.icon}</div>
-              </div>
-              <h3 className="text-lg font-display font-semibold text-white mb-2">
-                {point.title}
-              </h3>
-              <p className="text-gray-400 text-sm">
-                {point.description}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
-/* ============================================
-   Services Section
-   ============================================ */
-
-function ServicesSection() {
-  return (
-    <section id="services" className="py-20 section-dark relative overflow-hidden">
-      <div className="blob-purple top-0 right-0 opacity-50" />
-
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <span className="inline-block px-4 py-1 rounded-full glass text-sm text-primary-400 font-medium mb-4">
+          <span className="inline-block px-4 py-1 rounded-full bg-primary-900/50 text-primary-400 text-sm font-medium mb-4">
             What We Build
           </span>
-          <h2 className="text-3xl sm:text-4xl font-display font-bold text-white mb-4">
-            Full-Stack Development Services
+          <h2 className="font-display text-4xl md:text-5xl font-bold text-white mb-4">
+            Full-Stack Services
           </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">
-            From mobile apps to enterprise platforms, we deliver production-ready software
-            with AI integration where it adds real value.
+          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+            End-to-end development for apps, websites, and automation systems. 
+            AI-enhanced, rapidly delivered.
           </p>
         </div>
 
+        {/* Services Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {services.map((service, index) => (
-            <div key={index} className="card hover-lift group">
-              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center mb-5 group-hover:animate-pulse-glow">
-                <div className="text-white">{service.icon}</div>
+            <div
+              key={index}
+              className="card p-6 hover-lift group"
+            >
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-600/20 to-primary-400/20 flex items-center justify-center mb-4 group-hover:from-primary-600/30 group-hover:to-primary-400/30 transition-colors">
+                <service.icon className="w-6 h-6 text-primary-400" />
               </div>
-              <h3 className="text-xl font-display font-semibold text-white mb-3">
+              <h3 className="font-display text-xl font-semibold text-white mb-2">
                 {service.title}
               </h3>
-              <p className="text-gray-400 mb-5">
+              <p className="text-gray-400 mb-4">
                 {service.description}
               </p>
               <ul className="space-y-2">
-                {service.features.map((feature, fIndex) => (
-                  <li key={fIndex} className="flex items-center gap-2 text-sm text-gray-300">
-                    <Check className="w-4 h-4 text-primary-400 flex-shrink-0" />
+                {service.features.map((feature, i) => (
+                  <li key={i} className="flex items-center gap-2 text-sm text-gray-500">
+                    <Check className="w-4 h-4 text-primary-400" />
                     {feature}
                   </li>
                 ))}
@@ -487,77 +271,131 @@ function ServicesSection() {
   )
 }
 
-/* ============================================
-   Portfolio Section
-   ============================================ */
-
+// ============================================
+// PORTFOLIO SECTION
+// ============================================
 function PortfolioSection() {
-  return (
-    <section id="portfolio" className="py-20 section-gradient relative overflow-hidden">
-      <div className="blob-gold -left-40 top-1/2" />
+  const projects = [
+    {
+      title: 'FaithFeed',
+      category: 'Mobile & Web App',
+      description: 'Christian social media platform with AI-powered Bible study tools. 31,000+ verse embeddings, GPT-4 integration, RAG-based scripture search.',
+      tech: ['Flutter', 'Next.js', 'Firebase', 'OpenAI', 'Pinecone'],
+      color: 'from-blue-600 to-indigo-600',
+      stats: ['31K+ Verses', 'AI Study Partner', 'Cross-Platform'],
+      link: '#'
+    },
+    {
+      title: 'Basketball Scouting Platform',
+      category: 'Web Application',
+      description: 'Player prospecting system for a former Harlem Globetrotter. Video uploads, coach submissions, AI-powered skill analysis.',
+      tech: ['Next.js', 'Firebase', 'Cloudflare R2', 'OpenAI'],
+      color: 'from-orange-500 to-red-600',
+      stats: ['Video Analysis', 'Global Reach', 'Coach Portal'],
+      link: '#'
+    },
+    {
+      title: 'KHCL Logistics',
+      category: 'Logistics Platform',
+      description: 'Complete freight brokerage platform. Instant quotes, load board, real-time tracking, carrier management.',
+      tech: ['Next.js', 'PostgreSQL', 'Supabase', 'Real-time'],
+      color: 'from-emerald-500 to-teal-600',
+      stats: ['Instant Quotes', 'Load Board', 'GPS Tracking'],
+      link: '#'
+    },
+    {
+      title: 'Cooper Generations Asphalt',
+      category: 'Contractor Website',
+      description: 'Professional website for 35+ year asphalt company. SEO optimized, service pages, free estimate forms.',
+      tech: ['Next.js', 'Tailwind', 'Vercel', 'SEO'],
+      color: 'from-amber-500 to-orange-600',
+      stats: ['Local SEO', 'Lead Gen', 'Mobile-First'],
+      link: '#'
+    },
+    {
+      title: 'BlacktopProz',
+      category: 'Business Framework',
+      description: 'Complete business system for asphalt/concrete contractor. Branded quotes, invoicing, service pricing.',
+      tech: ['Branding', 'Documents', 'Pricing System'],
+      color: 'from-gray-700 to-gray-900',
+      stats: ['Quote System', 'Invoicing', 'Full Brand'],
+      link: '#'
+    },
+  ]
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  return (
+    <section id="portfolio" className="py-24 section-dark relative">
+      <div className="absolute inset-0 noise-overlay" />
+      <div className="relative max-w-7xl mx-auto px-6">
+        {/* Header */}
         <div className="text-center mb-16">
-          <span className="inline-block px-4 py-1 rounded-full glass text-sm text-accent-400 font-medium mb-4">
+          <span className="inline-block px-4 py-1 rounded-full bg-primary-900/50 text-primary-400 text-sm font-medium mb-4">
             Our Work
           </span>
-          <h2 className="text-3xl sm:text-4xl font-display font-bold text-white mb-4">
-            Projects Built to Scale
+          <h2 className="font-display text-4xl md:text-5xl font-bold text-white mb-4">
+            Projects We've Shipped
           </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">
-            Real systems handling real users. Every project is built with production-ready
-            architecture and designed to grow.
+          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+            Real products, real clients, real results. Every project delivered with AI-enhanced development.
           </p>
         </div>
 
-        <div className="space-y-6">
+        {/* Projects */}
+        <div className="space-y-8">
           {projects.map((project, index) => (
-            <Link
-              key={project.slug}
-              href={`/portfolio/${project.slug}`}
-              className="block group"
+            <div
+              key={index}
+              className="card overflow-hidden hover-lift group"
             >
-              <div className="card hover-lift flex flex-col lg:flex-row gap-6 overflow-hidden">
-                {/* Color Bar */}
-                <div className={`lg:w-2 w-full h-2 lg:h-auto rounded-full bg-gradient-to-b ${project.color}`} />
+              <div className="flex flex-col lg:flex-row">
+                {/* Color Bar / Image Placeholder */}
+                <div className={`lg:w-80 h-48 lg:h-auto bg-gradient-to-br ${project.color} flex items-center justify-center p-8`}>
+                  <div className="text-center">
+                    <div className="text-white/90 font-display text-2xl font-bold mb-2">
+                      {project.title}
+                    </div>
+                    <div className="text-white/60 text-sm">
+                      {project.category}
+                    </div>
+                  </div>
+                </div>
 
                 {/* Content */}
-                <div className="flex-1 py-2">
-                  <div className="flex flex-wrap items-center gap-3 mb-3">
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${project.gradient} text-white`}>
-                      {project.category}
-                    </span>
-                    <h3 className="text-xl font-display font-semibold text-white group-hover:text-primary-400 transition-colors">
-                      {project.title}
-                    </h3>
+                <div className="flex-1 p-8">
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {project.tech.map((t, i) => (
+                      <span
+                        key={i}
+                        className="px-3 py-1 rounded-full bg-primary-900/30 text-primary-300 text-xs font-medium"
+                      >
+                        {t}
+                      </span>
+                    ))}
                   </div>
 
-                  <p className="text-gray-400 mb-4">
+                  <p className="text-gray-300 mb-6 text-lg">
                     {project.description}
                   </p>
 
-                  <div className="flex flex-wrap items-center gap-4">
-                    <div className="flex flex-wrap gap-2">
-                      {project.tech.map((tech, tIndex) => (
-                        <span
-                          key={tIndex}
-                          className="px-2 py-1 rounded-md bg-white/5 text-xs text-gray-300"
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                    <span className="text-sm text-gray-500">|</span>
-                    <span className="text-sm text-primary-400">{project.stats}</span>
+                  <div className="flex flex-wrap gap-6 mb-6">
+                    {project.stats.map((stat, i) => (
+                      <div key={i} className="flex items-center gap-2 text-gray-400">
+                        <Check className="w-4 h-4 text-accent-400" />
+                        <span className="text-sm">{stat}</span>
+                      </div>
+                    ))}
                   </div>
-                </div>
 
-                {/* Arrow */}
-                <div className="flex items-center justify-end lg:justify-center px-4">
-                  <ChevronRight className="w-6 h-6 text-gray-600 group-hover:text-primary-400 group-hover:translate-x-1 transition-all" />
+                  <a
+                    href={project.link}
+                    className="inline-flex items-center gap-2 text-primary-400 hover:text-primary-300 font-medium transition-colors group-hover:gap-3"
+                  >
+                    View Project
+                    <ExternalLink className="w-4 h-4" />
+                  </a>
                 </div>
               </div>
-            </Link>
+            </div>
           ))}
         </div>
       </div>
@@ -565,59 +403,110 @@ function PortfolioSection() {
   )
 }
 
-/* ============================================
-   Pricing Section
-   ============================================ */
-
+// ============================================
+// PRICING SECTION
+// ============================================
 function PricingSection() {
-  return (
-    <section id="pricing" className="py-20 section-dark relative overflow-hidden">
-      <div className="blob-purple -right-40 top-0 opacity-50" />
+  const rates = [
+    { category: 'Development & Integration', rate: '$100', desc: 'Core coding, API work, lead gen features' },
+    { category: 'Design & SEO', rate: '$85', desc: 'UI/UX, marketing strategy, maintenance' },
+    { category: 'Setup & Project Management', rate: '$75', desc: 'Environment setup, revisions, media' },
+    { category: 'Content & Training', rate: '$65', desc: 'Copywriting, documentation, research' },
+    { category: 'Social Media', rate: '$50', desc: 'Content creation, posting, engagement' },
+  ]
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  const packages = [
+    {
+      name: 'Starter Website',
+      price: '$1,500',
+      description: 'Perfect for contractors and small businesses',
+      features: [
+        '5-7 page responsive website',
+        'Mobile-optimized design',
+        'Contact & quote forms',
+        'Basic SEO setup',
+        'Google Business integration',
+        '30 days support'
+      ],
+      popular: false
+    },
+    {
+      name: 'Custom Web App',
+      price: '$5,000+',
+      description: 'Full-featured web applications',
+      features: [
+        'Custom functionality',
+        'User authentication',
+        'Database integration',
+        'Admin dashboard',
+        'API development',
+        '60 days support'
+      ],
+      popular: true
+    },
+    {
+      name: 'Mobile App',
+      price: '$8,000+',
+      description: 'Cross-platform iOS & Android',
+      features: [
+        'Flutter development',
+        'iOS & Android deployment',
+        'Backend integration',
+        'Push notifications',
+        'App store submission',
+        '90 days support'
+      ],
+      popular: false
+    },
+  ]
+
+  return (
+    <section id="pricing" className="py-24 section-gradient relative">
+      <div className="absolute inset-0 noise-overlay" />
+      <div className="relative max-w-7xl mx-auto px-6">
+        {/* Header */}
         <div className="text-center mb-16">
-          <span className="inline-block px-4 py-1 rounded-full glass text-sm text-primary-400 font-medium mb-4">
-            Investment
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-display font-bold text-white mb-4">
+          <span className="inline-block px-4 py-1 rounded-full bg-primary-900/50 text-primary-400 text-sm font-medium mb-4">
             Transparent Pricing
+          </span>
+          <h2 className="font-display text-4xl md:text-5xl font-bold text-white mb-4">
+            Investment Options
           </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">
-            Fixed-price packages for common projects, or flexible hourly rates for custom work.
-            No hidden fees, no surprises.
+          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+            Competitive rates, clear deliverables. No hidden fees, no surprises.
           </p>
         </div>
 
         {/* Package Cards */}
         <div className="grid md:grid-cols-3 gap-6 mb-16">
-          {pricingPackages.map((pkg, index) => (
+          {packages.map((pkg, index) => (
             <div
               key={index}
-              className={`card hover-lift relative ${
-                pkg.popular ? 'border-primary-500 border-2' : ''
-              }`}
+              className={`card p-8 relative ${pkg.popular ? 'border-primary-500 ring-1 ring-primary-500/20' : ''}`}
             >
               {pkg.popular && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="px-4 py-1 rounded-full bg-gradient-to-r from-primary-500 to-accent-500 text-xs font-semibold text-white">
+                  <span className="px-4 py-1 rounded-full bg-gradient-to-r from-primary-600 to-primary-400 text-white text-xs font-semibold">
                     Most Popular
                   </span>
                 </div>
               )}
-
-              <div className="text-center mb-6">
-                <h3 className="text-xl font-display font-semibold text-white mb-2">
-                  {pkg.name}
-                </h3>
-                <div className="text-4xl font-display font-bold gradient-text mb-2">
-                  {pkg.price}
-                </div>
-                <p className="text-sm text-gray-400">{pkg.description}</p>
+              
+              <h3 className="font-display text-xl font-semibold text-white mb-2">
+                {pkg.name}
+              </h3>
+              <p className="text-gray-400 text-sm mb-4">{pkg.description}</p>
+              
+              <div className="mb-6">
+                <span className="font-display text-4xl font-bold text-white">{pkg.price}</span>
+                {pkg.price.includes('+') && (
+                  <span className="text-gray-500 text-sm ml-2">starting</span>
+                )}
               </div>
 
               <ul className="space-y-3 mb-8">
-                {pkg.features.map((feature, fIndex) => (
-                  <li key={fIndex} className="flex items-start gap-3 text-gray-300">
+                {pkg.features.map((feature, i) => (
+                  <li key={i} className="flex items-start gap-3 text-gray-300">
                     <Check className="w-5 h-5 text-primary-400 flex-shrink-0 mt-0.5" />
                     <span className="text-sm">{feature}</span>
                   </li>
@@ -626,7 +515,7 @@ function PricingSection() {
 
               <a
                 href="#contact"
-                className={`w-full ${pkg.popular ? 'btn-primary' : 'btn-secondary'} text-center`}
+                className={pkg.popular ? 'btn-primary w-full text-center block' : 'btn-secondary w-full text-center block'}
               >
                 Get Started
               </a>
@@ -635,23 +524,24 @@ function PricingSection() {
         </div>
 
         {/* Hourly Rates */}
-        <div className="card max-w-4xl mx-auto">
-          <h3 className="text-xl font-display font-semibold text-white mb-6 text-center">
-            Hourly Rates
+        <div className="card p-8">
+          <h3 className="font-display text-2xl font-semibold text-white mb-6 text-center">
+            Hourly Rate Card
           </h3>
-          <div className="space-y-4">
-            {hourlyRates.map((rate, index) => (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {rates.map((rate, index) => (
               <div
                 key={index}
-                className="flex flex-col sm:flex-row sm:items-center justify-between py-3 border-b border-white/10 last:border-0"
+                className="flex items-center justify-between p-4 rounded-xl bg-primary-900/20 border border-primary-800/20"
               >
                 <div>
-                  <h4 className="font-semibold text-white">{rate.category}</h4>
-                  <p className="text-sm text-gray-400">{rate.description}</p>
+                  <div className="text-white font-medium">{rate.category}</div>
+                  <div className="text-gray-500 text-sm">{rate.desc}</div>
                 </div>
-                <span className="text-lg font-display font-bold text-primary-400 mt-2 sm:mt-0">
+                <div className="font-display text-2xl font-bold text-primary-400">
                   {rate.rate}
-                </span>
+                  <span className="text-sm text-gray-500">/hr</span>
+                </div>
               </div>
             ))}
           </div>
@@ -661,217 +551,143 @@ function PricingSection() {
   )
 }
 
-/* ============================================
-   Contact Section
-   ============================================ */
-
+// ============================================
+// CONTACT SECTION
+// ============================================
 function ContactSection() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
+    project: '',
     budget: '',
-    projectType: '',
-    message: '',
+    message: ''
   })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    setIsSubmitting(true)
-
-    try {
-      // Formspree integration - replace YOUR_FORM_ID with actual ID
-      const response = await fetch('https://formspree.io/f/mqeekvgl', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      })
-
-      if (response.ok) {
-        setSubmitStatus('success')
-        setFormData({
-          name: '',
-          email: '',
-          phone: '',
-          budget: '',
-          projectType: '',
-          message: '',
-        })
-      } else {
-        setSubmitStatus('error')
-      }
-    } catch {
-      setSubmitStatus('error')
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }))
+    // Handle form submission - integrate with Formspree or similar
+    console.log(formData)
+    alert('Thanks! We\'ll be in touch within 24 hours.')
   }
 
   return (
-    <section id="contact" className="py-20 section-gradient relative overflow-hidden">
-      <div className="blob-gold top-0 left-1/2 -translate-x-1/2" />
+    <section id="contact" className="py-24 section-dark relative">
+      <div className="absolute inset-0 noise-overlay" />
+      <div className="relative max-w-7xl mx-auto px-6">
+        <div className="grid lg:grid-cols-2 gap-12">
+          {/* Left - Info */}
+          <div>
+            <span className="inline-block px-4 py-1 rounded-full bg-primary-900/50 text-primary-400 text-sm font-medium mb-4">
+              Let's Talk
+            </span>
+            <h2 className="font-display text-4xl md:text-5xl font-bold text-white mb-6">
+              Ready to Build?
+            </h2>
+            <p className="text-gray-400 text-lg mb-8">
+              Tell us about your project. We'll get back to you within 24 hours with a game plan.
+            </p>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <span className="inline-block px-4 py-1 rounded-full glass text-sm text-accent-400 font-medium mb-4">
-            Let&apos;s Talk
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-display font-bold text-white mb-4">
-            Ready to Build Something Scalable?
-          </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">
-            Tell us about your project. We&apos;ll get back to you within 24 hours with a
-            clear plan and honest assessment.
-          </p>
-        </div>
+            {/* Contact Methods */}
+            <div className="space-y-4 mb-8">
+              <a
+                href="mailto:info@lmwlabs.faith"
+                className="flex items-center gap-4 p-4 rounded-xl bg-primary-900/20 border border-primary-800/20 hover:border-primary-600/30 transition-colors group"
+              >
+                <div className="w-12 h-12 rounded-xl bg-primary-600/20 flex items-center justify-center">
+                  <Mail className="w-5 h-5 text-primary-400" />
+                </div>
+                <div>
+                  <div className="text-gray-400 text-sm">Email us</div>
+                  <div className="text-white font-medium group-hover:text-primary-400 transition-colors">
+                    info@lmwlabs.faith
+                  </div>
+                </div>
+              </a>
 
-        <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
-          {/* Contact Info */}
-          <div className="space-y-8">
-            <div>
-              <h3 className="text-2xl font-display font-bold text-white mb-4">
-                Get In Touch
-              </h3>
-              <p className="text-gray-400">
-                Whether you need a simple website or a complex enterprise platform,
-                we&apos;re here to help you build software that scales.
-              </p>
+              <a
+                href="tel:+16015551234"
+                className="flex items-center gap-4 p-4 rounded-xl bg-primary-900/20 border border-primary-800/20 hover:border-primary-600/30 transition-colors group"
+              >
+                <div className="w-12 h-12 rounded-xl bg-primary-600/20 flex items-center justify-center">
+                  <Phone className="w-5 h-5 text-primary-400" />
+                </div>
+                <div>
+                  <div className="text-gray-400 text-sm">Call us</div>
+                  <div className="text-white font-medium group-hover:text-primary-400 transition-colors">
+                    (601) 555-1234
+                  </div>
+                </div>
+              </a>
+
+              <a
+                href="#"
+                className="flex items-center gap-4 p-4 rounded-xl bg-primary-900/20 border border-primary-800/20 hover:border-primary-600/30 transition-colors group"
+              >
+                <div className="w-12 h-12 rounded-xl bg-primary-600/20 flex items-center justify-center">
+                  <Calendar className="w-5 h-5 text-primary-400" />
+                </div>
+                <div>
+                  <div className="text-gray-400 text-sm">Schedule a call</div>
+                  <div className="text-white font-medium group-hover:text-primary-400 transition-colors">
+                    Book on Calendly
+                  </div>
+                </div>
+              </a>
             </div>
 
-            <div className="space-y-4">
-              <a
-                href="mailto:contact@lmwlabs.faith"
-                className="flex items-center gap-4 p-4 card hover-lift group"
-              >
-                <div className="w-12 h-12 rounded-xl bg-primary-500/20 flex items-center justify-center">
-                  <Mail className="w-6 h-6 text-primary-400" />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-400">Email us at</p>
-                  <p className="text-white font-medium group-hover:text-primary-400 transition-colors">
-                    contact@lmwlabs.faith
-                  </p>
-                </div>
-              </a>
-
-              <a
-                href="tel:+16012125714"
-                className="flex items-center gap-4 p-4 card hover-lift group"
-              >
-                <div className="w-12 h-12 rounded-xl bg-primary-500/20 flex items-center justify-center">
-                  <Phone className="w-6 h-6 text-primary-400" />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-400">Call us at</p>
-                  <p className="text-white font-medium group-hover:text-primary-400 transition-colors">
-                    (601) 212-5714
-                  </p>
-                </div>
-              </a>
-
-              <a
-                href="https://calendly.com/lmwlabs"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-4 p-4 card hover-lift group"
-              >
-                <div className="w-12 h-12 rounded-xl bg-accent-500/20 flex items-center justify-center">
-                  <Calendar className="w-6 h-6 text-accent-400" />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-400">Schedule a call</p>
-                  <p className="text-white font-medium group-hover:text-accent-400 transition-colors">
-                    Book on Calendly
-                  </p>
-                </div>
-              </a>
-
-              <div className="flex items-center gap-4 p-4 card">
-                <div className="w-12 h-12 rounded-xl bg-primary-500/20 flex items-center justify-center">
-                  <MapPin className="w-6 h-6 text-primary-400" />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-400">Located in</p>
-                  <p className="text-white font-medium">Brandon, Mississippi</p>
-                </div>
-              </div>
+            {/* Location */}
+            <div className="text-gray-500">
+              <p className="mb-1">LMW Labs LLC</p>
+              <p>Brandon, Mississippi</p>
             </div>
           </div>
 
-          {/* Contact Form */}
-          <div className="card">
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div className="grid sm:grid-cols-2 gap-5">
+          {/* Right - Form */}
+          <div className="card p-8">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
-                    Name *
-                  </label>
+                  <label className="block text-gray-400 text-sm mb-2">Name</label>
                   <input
                     type="text"
-                    id="name"
-                    name="name"
                     required
-                    value={formData.name}
-                    onChange={handleChange}
-                    className="input"
+                    className="w-full px-4 py-3 rounded-xl bg-primary-900/30 border border-primary-800/30 text-white placeholder-gray-500 focus:border-primary-500 focus:outline-none transition-colors"
                     placeholder="Your name"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   />
                 </div>
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
-                    Email *
-                  </label>
+                  <label className="block text-gray-400 text-sm mb-2">Email</label>
                   <input
                     type="email"
-                    id="email"
-                    name="email"
                     required
+                    className="w-full px-4 py-3 rounded-xl bg-primary-900/30 border border-primary-800/30 text-white placeholder-gray-500 focus:border-primary-500 focus:outline-none transition-colors"
+                    placeholder="you@company.com"
                     value={formData.email}
-                    onChange={handleChange}
-                    className="input"
-                    placeholder="you@example.com"
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   />
                 </div>
               </div>
 
-              <div className="grid sm:grid-cols-2 gap-5">
+              <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-gray-300 mb-2">
-                    Phone
-                  </label>
+                  <label className="block text-gray-400 text-sm mb-2">Phone</label>
                   <input
                     type="tel"
-                    id="phone"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    className="input"
+                    className="w-full px-4 py-3 rounded-xl bg-primary-900/30 border border-primary-800/30 text-white placeholder-gray-500 focus:border-primary-500 focus:outline-none transition-colors"
                     placeholder="(555) 123-4567"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   />
                 </div>
                 <div>
-                  <label htmlFor="budget" className="block text-sm font-medium text-gray-300 mb-2">
-                    Budget Range
-                  </label>
+                  <label className="block text-gray-400 text-sm mb-2">Budget Range</label>
                   <select
-                    id="budget"
-                    name="budget"
+                    className="w-full px-4 py-3 rounded-xl bg-primary-900/30 border border-primary-800/30 text-white focus:border-primary-500 focus:outline-none transition-colors"
                     value={formData.budget}
-                    onChange={handleChange}
-                    className="input"
+                    onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
                   >
                     <option value="">Select budget</option>
                     <option value="1-3k">$1,000 - $3,000</option>
@@ -883,66 +699,37 @@ function ContactSection() {
               </div>
 
               <div>
-                <label htmlFor="projectType" className="block text-sm font-medium text-gray-300 mb-2">
-                  Project Type
-                </label>
+                <label className="block text-gray-400 text-sm mb-2">Project Type</label>
                 <select
-                  id="projectType"
-                  name="projectType"
-                  value={formData.projectType}
-                  onChange={handleChange}
-                  className="input"
+                  className="w-full px-4 py-3 rounded-xl bg-primary-900/30 border border-primary-800/30 text-white focus:border-primary-500 focus:outline-none transition-colors"
+                  value={formData.project}
+                  onChange={(e) => setFormData({ ...formData, project: e.target.value })}
                 >
-                  <option value="">Select project type</option>
-                  <option value="website">Website</option>
+                  <option value="">What do you need?</option>
+                  <option value="website">Business Website</option>
                   <option value="webapp">Web Application</option>
                   <option value="mobile">Mobile App</option>
                   <option value="ai">AI Integration</option>
                   <option value="logistics">Logistics Software</option>
-                  <option value="other">Other</option>
+                  <option value="other">Something Else</option>
                 </select>
               </div>
 
               <div>
-                <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
-                  Tell us about your project
-                </label>
+                <label className="block text-gray-400 text-sm mb-2">Tell us about your project</label>
                 <textarea
-                  id="message"
-                  name="message"
                   rows={4}
+                  className="w-full px-4 py-3 rounded-xl bg-primary-900/30 border border-primary-800/30 text-white placeholder-gray-500 focus:border-primary-500 focus:outline-none transition-colors resize-none"
+                  placeholder="What are you building? What problem does it solve?"
                   value={formData.message}
-                  onChange={handleChange}
-                  className="input resize-none"
-                  placeholder="What are you looking to build? Any specific features or requirements?"
+                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                 />
               </div>
 
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="btn-accent w-full disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isSubmitting ? (
-                  'Sending...'
-                ) : (
-                  <>
-                    Send Message
-                    <Send className="w-5 h-5 ml-2" />
-                  </>
-                )}
+              <button type="submit" className="btn-primary w-full flex items-center justify-center gap-2">
+                Send Message
+                <ArrowRight className="w-4 h-4" />
               </button>
-
-              {submitStatus === 'success' && (
-                <p className="text-center text-green-400 text-sm">
-                  Thanks! We&apos;ll be in touch within 24 hours.
-                </p>
-              )}
-              {submitStatus === 'error' && (
-                <p className="text-center text-red-400 text-sm">
-                  Something went wrong. Please email us directly at contact@lmwlabs.faith
-                </p>
-              )}
             </form>
           </div>
         </div>
@@ -951,38 +738,41 @@ function ContactSection() {
   )
 }
 
-/* ============================================
-   Footer
-   ============================================ */
-
+// ============================================
+// FOOTER
+// ============================================
 function Footer() {
   return (
-    <footer className="py-12 section-dark border-t border-white/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <footer className="py-12 border-t border-primary-900/30">
+      <div className="max-w-7xl mx-auto px-6">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Logo */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center">
-              <Layers className="w-6 h-6 text-white" />
-            </div>
-            <span className="text-xl font-display font-bold text-white">
+            <Image
+              src="/images/logo.png"
+              alt="LMW Labs"
+              width={32}
+              height={32}
+              className="w-8 h-8 object-contain"
+            />
+            <span className="font-display font-semibold text-white">
               LMW Labs
             </span>
           </div>
 
           {/* Copyright */}
-          <p className="text-gray-500 text-sm text-center">
-            © {new Date().getFullYear()} LMW Labs LLC. All rights reserved.
+          <p className="text-gray-500 text-sm">
+            © 2025 LMW Labs LLC. All rights reserved. Brandon, Mississippi.
           </p>
 
           {/* Links */}
-          <div className="flex items-center gap-6">
-            <Link href="/privacy" className="text-sm text-gray-400 hover:text-white transition-colors">
+          <div className="flex gap-6">
+            <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">
               Privacy
-            </Link>
-            <Link href="/terms" className="text-sm text-gray-400 hover:text-white transition-colors">
+            </a>
+            <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">
               Terms
-            </Link>
+            </a>
           </div>
         </div>
       </div>
@@ -990,16 +780,14 @@ function Footer() {
   )
 }
 
-/* ============================================
-   Main Page Component
-   ============================================ */
-
+// ============================================
+// MAIN PAGE
+// ============================================
 export default function HomePage() {
   return (
     <main>
       <Navigation />
       <HeroSection />
-      <WhyScalableSection />
       <ServicesSection />
       <PortfolioSection />
       <PricingSection />
