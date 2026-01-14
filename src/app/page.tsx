@@ -24,7 +24,10 @@ import {
   Users,
   BarChart3,
   Shield,
-  Clock
+  Clock,
+  Github,
+  Twitter,
+  Quote
 } from 'lucide-react'
 
 // ============================================
@@ -277,21 +280,52 @@ function ServicesSection() {
 function PortfolioSection() {
   const projects = [
     {
+      title: 'THREADRIPPER',
+      category: 'AI Twitter Bot',
+      description: 'AI-powered Twitter bot that detects viral threads in real-time and exposes psychological subtext using Google Gemini. Analyzes power dynamics, emotional manipulation, and hidden meanings.',
+      tech: ['Node.js', 'Google Gemini', 'Cloud Run', 'Twitter API', 'Firestore'],
+      color: 'from-purple-600 to-indigo-600',
+      stats: ['1,247 Threads', '87.3% Accuracy', 'Real-time'],
+      link: 'https://threadripper-demo.lmwlabs.faith/',
+      image: '/images/threadripper.png'
+    },
+    {
+      title: 'PropListAI',
+      category: 'AI Real Estate Tool',
+      description: 'Transform property listings with AI. Save 40+ minutes per listing while generating professional, platform-optimized descriptions for MLS, Zillow, and social media.',
+      tech: ['Google Gemini', 'Vanilla JS', 'Real Estate', 'AI Content'],
+      color: 'from-emerald-500 to-teal-600',
+      stats: ['40+ Min Saved', '3 Platforms', '500+ Listings'],
+      link: 'https://proplistai-demo-3otyem3bz-cryptonorths-projects.vercel.app/',
+      image: '/images/proplistai.png'
+    },
+    {
+      title: 'VECTR',
+      category: 'Data Analytics',
+      description: 'Advanced data visualization and analytics platform. Powerful insights, beautiful charts, real-time data processing, and custom dashboard building capabilities.',
+      tech: ['React', 'D3.js', 'Analytics', 'Data Viz', 'Dashboard'],
+      color: 'from-blue-500 to-cyan-600',
+      stats: ['25+ Charts', '100K+ Datasets', 'Real-time'],
+      link: 'https://vectr-demo-4rtzxnjj6-cryptonorths-projects.vercel.app/',
+      image: '/images/vectr.png'
+    },
+    {
+      title: 'Verbalize',
+      category: 'AI Voice-to-Code',
+      description: 'Revolutionary web app that transforms natural speech into production-ready code using cutting-edge AI. Supports 6+ programming languages with 90%+ accuracy.',
+      tech: ['React 18', 'Gemini AI', 'Google Cloud', 'Speech API'],
+      color: 'from-pink-500 to-rose-600',
+      stats: ['6+ Languages', '90%+ Accuracy', '<3s Response'],
+      link: 'https://verbalize-demo-76pcw1wp4-cryptonorths-projects.vercel.app',
+      image: '/images/verbalize.png'
+    },
+    {
       title: 'FaithFeed',
       category: 'Mobile & Web App',
       description: 'Christian social media platform with AI-powered Bible study tools. 31,000+ verse embeddings, GPT-4 integration, RAG-based scripture search.',
       tech: ['Flutter', 'Next.js', 'Firebase', 'OpenAI', 'Pinecone'],
       color: 'from-blue-600 to-indigo-600',
       stats: ['31K+ Verses', 'AI Study Partner', 'Cross-Platform'],
-      link: '#'
-    },
-    {
-      title: 'Basketball Scouting Platform',
-      category: 'Web Application',
-      description: 'Player prospecting system for a former Harlem Globetrotter. Video uploads, coach submissions, AI-powered skill analysis.',
-      tech: ['Next.js', 'Firebase', 'Cloudflare R2', 'OpenAI'],
-      color: 'from-orange-500 to-red-600',
-      stats: ['Video Analysis', 'Global Reach', 'Coach Portal'],
       link: '#'
     },
     {
@@ -304,21 +338,21 @@ function PortfolioSection() {
       link: '#'
     },
     {
+      title: 'Basketball Scouting Platform',
+      category: 'Web Application',
+      description: 'Player prospecting system for a former Harlem Globetrotter. Video uploads, coach submissions, AI-powered skill analysis.',
+      tech: ['Next.js', 'Firebase', 'Cloudflare R2', 'OpenAI'],
+      color: 'from-orange-500 to-red-600',
+      stats: ['Video Analysis', 'Global Reach', 'Coach Portal'],
+      link: '#'
+    },
+    {
       title: 'Cooper Generations Asphalt',
       category: 'Contractor Website',
       description: 'Professional website for 35+ year asphalt company. SEO optimized, service pages, free estimate forms.',
       tech: ['Next.js', 'Tailwind', 'Vercel', 'SEO'],
       color: 'from-amber-500 to-orange-600',
       stats: ['Local SEO', 'Lead Gen', 'Mobile-First'],
-      link: '#'
-    },
-    {
-      title: 'BlacktopProz',
-      category: 'Business Framework',
-      description: 'Complete business system for asphalt/concrete contractor. Branded quotes, invoicing, service pricing.',
-      tech: ['Branding', 'Documents', 'Pricing System'],
-      color: 'from-gray-700 to-gray-900',
-      stats: ['Quote System', 'Invoicing', 'Full Brand'],
       link: '#'
     },
   ]
@@ -545,6 +579,105 @@ function PricingSection() {
               </div>
             ))}
           </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ============================================
+// TESTIMONIALS SECTION
+// ============================================
+const TESTIMONIALS = [
+  {
+    id: 1,
+    name: 'Emma Guest',
+    role: 'Data Analyst',
+    company: 'Advanced Analytics',
+    project: 'THREADRIPPER',
+    rating: 5,
+    review: 'Absolutely incredible work! The AI analysis capabilities exceeded my expectations. The real-time viral thread detection has transformed how we monitor social media trends.',
+  },
+  {
+    id: 2,
+    name: 'Mike Craft',
+    role: 'Real Estate Agent',
+    company: 'United Country',
+    project: 'PropListAI',
+    rating: 5,
+    review: 'PropListAI has saved me hours of work every week. The AI-generated listings are professional and engaging. My clients love the quality of the descriptions!',
+  },
+  {
+    id: 3,
+    name: 'Sarah Johnson',
+    role: 'Operations Manager',
+    company: 'KHCL Logistics',
+    project: 'KHCL Logistics Platform',
+    rating: 5,
+    review: 'The logistics platform LMW Labs built completely transformed our operations. Real-time tracking, automated dispatch - everything we needed and more.',
+  },
+]
+
+function TestimonialsSection() {
+  return (
+    <section className="py-24 section-dark relative">
+      <div className="absolute inset-0 noise-overlay" />
+      <div className="relative max-w-7xl mx-auto px-6">
+        <div className="text-center mb-16">
+          <span className="inline-block px-4 py-1 rounded-full bg-primary-900/50 text-primary-400 text-sm font-medium mb-4">
+            Testimonials
+          </span>
+          <h2 className="font-display text-4xl md:text-5xl font-bold text-white mb-6">
+            What Our Clients Say
+          </h2>
+          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+            Real feedback from real clients who trusted us with their projects
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          {TESTIMONIALS.map((testimonial) => (
+            <div
+              key={testimonial.id}
+              className="card p-8 relative"
+            >
+              <Quote className="absolute top-6 right-6 w-8 h-8 text-primary-600/20" />
+
+              {/* Rating */}
+              <div className="flex gap-1 mb-4">
+                {[...Array(testimonial.rating)].map((_, i) => (
+                  <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
+                ))}
+              </div>
+
+              {/* Review */}
+              <p className="text-gray-300 mb-6 leading-relaxed">
+                "{testimonial.review}"
+              </p>
+
+              {/* Project Badge */}
+              <div className="mb-4">
+                <span className="inline-block px-3 py-1 rounded-full bg-primary-900/50 text-primary-400 text-xs font-medium">
+                  {testimonial.project}
+                </span>
+              </div>
+
+              {/* Author */}
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center">
+                  <span className="text-white font-semibold text-sm">
+                    {testimonial.name.split(' ').map(n => n[0]).join('')}
+                  </span>
+                </div>
+                <div>
+                  <div className="font-semibold text-white">{testimonial.name}</div>
+                  <div className="text-gray-500 text-sm">
+                    {testimonial.role} at {testimonial.company}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>
@@ -825,37 +958,78 @@ function ContactSection() {
 // ============================================
 function Footer() {
   return (
-    <footer className="py-12 border-t border-primary-900/30">
+    <footer className="py-16 border-t border-primary-900/30">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-          {/* Logo */}
-          <div className="flex items-center gap-3">
-            <Image
-              src="/images/logo.png"
-              alt="LMW Labs"
-              width={32}
-              height={32}
-              className="w-8 h-8 object-contain"
-            />
-            <span className="font-display font-semibold text-white">
-              LMW Labs
-            </span>
+        <div className="grid md:grid-cols-4 gap-12 mb-12">
+          {/* Brand */}
+          <div className="md:col-span-2">
+            <div className="flex items-center gap-3 mb-4">
+              <Image
+                src="/images/logo.png"
+                alt="LMW Labs"
+                width={40}
+                height={40}
+                className="w-10 h-10 object-contain"
+              />
+              <span className="font-display font-bold text-xl text-white">
+                LMW Labs
+              </span>
+            </div>
+            <p className="text-gray-400 mb-6 max-w-md">
+              Building the future with AI-powered solutions. Transforming businesses through innovative technology and intelligent automation.
+            </p>
+            <div className="flex gap-4">
+              <a
+                href="https://github.com/LMW-Labs"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-lg bg-primary-900/30 flex items-center justify-center text-gray-400 hover:text-white hover:bg-primary-800/50 transition-all"
+              >
+                <Github className="w-5 h-5" />
+              </a>
+              <a
+                href="https://x.com/LMW_Labs"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-lg bg-primary-900/30 flex items-center justify-center text-gray-400 hover:text-white hover:bg-primary-800/50 transition-all"
+              >
+                <Twitter className="w-5 h-5" />
+              </a>
+              <a
+                href="mailto:info@lmwlabs.faith"
+                className="w-10 h-10 rounded-lg bg-primary-900/30 flex items-center justify-center text-gray-400 hover:text-white hover:bg-primary-800/50 transition-all"
+              >
+                <Mail className="w-5 h-5" />
+              </a>
+            </div>
           </div>
 
-          {/* Copyright */}
+          {/* Quick Links */}
+          <div>
+            <h3 className="font-display font-semibold text-white mb-4">Quick Links</h3>
+            <ul className="space-y-3">
+              <li><a href="#services" className="text-gray-400 hover:text-white transition-colors">Services</a></li>
+              <li><a href="#portfolio" className="text-gray-400 hover:text-white transition-colors">Portfolio</a></li>
+              <li><a href="#pricing" className="text-gray-400 hover:text-white transition-colors">Pricing</a></li>
+              <li><a href="#contact" className="text-gray-400 hover:text-white transition-colors">Contact</a></li>
+            </ul>
+          </div>
+
+          {/* Legal */}
+          <div>
+            <h3 className="font-display font-semibold text-white mb-4">Legal</h3>
+            <ul className="space-y-3">
+              <li><a href="/privacy" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
+              <li><a href="/terms" className="text-gray-400 hover:text-white transition-colors">Terms of Service</a></li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Bottom */}
+        <div className="pt-8 border-t border-primary-900/20 text-center">
           <p className="text-gray-500 text-sm">
-            © 2025 LMW Labs LLC. All rights reserved. Brandon, Mississippi.
+            © {new Date().getFullYear()} LMW Labs LLC. All rights reserved. Brandon, Mississippi.
           </p>
-
-          {/* Links */}
-          <div className="flex gap-6">
-            <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">
-              Privacy
-            </a>
-            <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">
-              Terms
-            </a>
-          </div>
         </div>
       </div>
     </footer>
@@ -873,6 +1047,7 @@ export default function HomePage() {
       <ServicesSection />
       <PortfolioSection />
       <PricingSection />
+      <TestimonialsSection />
       <ContactSection />
       <Footer />
     </main>
