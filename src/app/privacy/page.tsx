@@ -88,6 +88,39 @@ export default function PrivacyPage() {
 
               <section>
                 <h2 className="text-xl font-display font-semibold text-white mb-4">
+                  Blog & Content
+                </h2>
+                <p>
+                  Our blog may collect additional data such as comments and email subscriptions.
+                  Blog content is for informational purposes and may be updated without notice.
+                  We are not responsible for the accuracy or completeness of third-party
+                  information referenced in blog posts.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-xl font-display font-semibold text-white mb-4">
+                  Affiliate Links & Advertising
+                </h2>
+                <p className="mb-4">
+                  Some content on this website may contain affiliate links. This means we may
+                  earn a commission if you click on a link and make a purchase, at no additional
+                  cost to you. Affiliate relationships include but are not limited to:
+                </p>
+                <ul className="list-disc list-inside mt-4 space-y-2">
+                  <li>Software tools and services we recommend</li>
+                  <li>Hosting providers and development platforms</li>
+                  <li>Courses, books, and educational resources</li>
+                  <li>Business tools and productivity software</li>
+                </ul>
+                <p className="mt-4">
+                  We only recommend products and services we genuinely believe provide value.
+                  Affiliate partnerships do not influence our editorial content or recommendations.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-xl font-display font-semibold text-white mb-4">
                   Analytics & Tracking
                 </h2>
                 <p className="mb-4">

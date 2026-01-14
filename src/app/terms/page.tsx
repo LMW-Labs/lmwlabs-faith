@@ -138,6 +138,51 @@ export default function TermsPage() {
 
               <section>
                 <h2 className="text-xl font-display font-semibold text-white mb-4">
+                  Blog Content
+                </h2>
+                <p>
+                  Our blog provides educational and informational content about software
+                  development, technology, and business. Blog content is provided "as is"
+                  without warranties of any kind. We do not guarantee specific results from
+                  implementing advice or strategies discussed. You are responsible for your
+                  own decisions based on blog content.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-xl font-display font-semibold text-white mb-4">
+                  Affiliate Disclosure
+                </h2>
+                <p className="mb-4">
+                  This website participates in affiliate marketing programs. When you click
+                  certain links and make purchases, we may receive compensation. This includes:
+                </p>
+                <ul className="list-disc list-inside mt-4 space-y-2">
+                  <li>Product and service recommendations</li>
+                  <li>Software tools and platforms</li>
+                  <li>Educational resources and courses</li>
+                  <li>Third-party services we partner with</li>
+                </ul>
+                <p className="mt-4">
+                  Affiliate relationships are clearly disclosed where applicable. Our opinions
+                  and recommendations are our own and are not influenced by compensation.
+                  Prices are not affected by our affiliate status.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-xl font-display font-semibold text-white mb-4">
+                  External Links
+                </h2>
+                <p>
+                  Our website may contain links to third-party websites. We are not responsible
+                  for the content, privacy practices, or terms of service of external sites.
+                  Clicking external links is at your own risk.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-xl font-display font-semibold text-white mb-4">
                   Changes to Terms
                 </h2>
                 <p>
