@@ -634,11 +634,11 @@ function ContactSection() {
               Let's Talk
             </span>
             <h2 className="font-display text-4xl md:text-5xl font-bold text-white mb-6">
-              Your Vision Deserves<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-accent-400">To Become Reality</span>
+              Ready to Build<br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-accent-400">Your Vision?</span>
             </h2>
             <p className="text-gray-400 text-lg mb-8">
-              Stop dreaming about the app that could change everything. Let's build it together. Tell us your vision and we'll craft a roadmap to make it happen.
+              Every great product starts with a conversation. Tell us where you want to go, and we'll map the journey together.
             </p>
 
             {/* Contact Methods */}
