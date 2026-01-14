@@ -615,13 +615,15 @@ function ContactSection() {
                 <div>
                   <div className="text-gray-400 text-sm">Call us</div>
                   <div className="text-white font-medium group-hover:text-primary-400 transition-colors">
-                    (601) 555-1234
+                    (601) 212-5714
                   </div>
                 </div>
               </a>
 
               <a
-                href="#"
+                href="https://calendly.com/admin-faithfeed/30min"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="flex items-center gap-4 p-4 rounded-xl bg-primary-900/20 border border-primary-800/20 hover:border-primary-600/30 transition-colors group"
               >
                 <div className="w-12 h-12 rounded-xl bg-primary-600/20 flex items-center justify-center">
