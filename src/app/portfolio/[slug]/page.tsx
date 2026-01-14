@@ -3,18 +3,10 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import {
   ArrowLeft,
-  ExternalLink,
   CheckCircle,
   Layers,
   Code2,
   Database,
-  Cloud,
-  Smartphone,
-  Globe,
-  Brain,
-  Truck,
-  Shield,
-  Zap,
 } from 'lucide-react'
 
 /* ============================================
@@ -37,17 +29,10 @@ interface ProjectDetails {
   features: string[]
   color: string
   gradient: string
-  icon: React.ReactNode
   stats: {
     label: string
     value: string
   }[]
-  testimonial?: {
-    quote: string
-    author: string
-    role: string
-  }
-  liveUrl?: string
 }
 
 const projects: Record<string, ProjectDetails> = {
@@ -89,7 +74,6 @@ const projects: Record<string, ProjectDetails> = {
     ],
     color: 'from-purple-500 to-indigo-600',
     gradient: 'bg-gradient-to-br from-purple-500/20 to-indigo-600/20',
-    icon: <Brain className="w-8 h-8" />,
     stats: [
       { label: 'Verse Embeddings', value: '31K+' },
       { label: 'Query Response', value: '<200ms' },
@@ -135,7 +119,6 @@ const projects: Record<string, ProjectDetails> = {
     ],
     color: 'from-orange-500 to-red-600',
     gradient: 'bg-gradient-to-br from-orange-500/20 to-red-600/20',
-    icon: <Globe className="w-8 h-8" />,
     stats: [
       { label: 'Video Storage', value: 'Unlimited' },
       { label: 'AI Analysis', value: 'Automated' },
@@ -181,7 +164,6 @@ const projects: Record<string, ProjectDetails> = {
     ],
     color: 'from-emerald-500 to-teal-600',
     gradient: 'bg-gradient-to-br from-emerald-500/20 to-teal-600/20',
-    icon: <Truck className="w-8 h-8" />,
     stats: [
       { label: 'Quote Time', value: 'Minutes' },
       { label: 'Tracking', value: 'Real-time' },
@@ -227,7 +209,6 @@ const projects: Record<string, ProjectDetails> = {
     ],
     color: 'from-slate-500 to-zinc-600',
     gradient: 'bg-gradient-to-br from-slate-500/20 to-zinc-600/20',
-    icon: <Shield className="w-8 h-8" />,
     stats: [
       { label: 'Load Time', value: '<2s' },
       { label: 'Mobile Score', value: '95+' },
@@ -273,7 +254,6 @@ const projects: Record<string, ProjectDetails> = {
     ],
     color: 'from-amber-500 to-yellow-600',
     gradient: 'bg-gradient-to-br from-amber-500/20 to-yellow-600/20',
-    icon: <Zap className="w-8 h-8" />,
     stats: [
       { label: 'Documents', value: '20+' },
       { label: 'Templates', value: 'Included' },
