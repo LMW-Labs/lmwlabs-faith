@@ -768,7 +768,7 @@ function ContactSection() {
               </a>
 
               <a
-                href="tel:+16015551234"
+                href="tel:+16012125714"
                 className="flex items-center gap-4 p-4 card hover-lift group"
               >
                 <div className="w-12 h-12 rounded-xl bg-primary-500/20 flex items-center justify-center">
@@ -777,7 +777,7 @@ function ContactSection() {
                 <div>
                   <p className="text-sm text-gray-400">Call us at</p>
                   <p className="text-white font-medium group-hover:text-primary-400 transition-colors">
-                    (601) 555-1234
+                    (601) 212-5714
                   </p>
                 </div>
               </a>
