@@ -88,12 +88,30 @@ export default function PrivacyPage() {
 
               <section>
                 <h2 className="text-xl font-display font-semibold text-white mb-4">
-                  Cookies and Analytics
+                  Analytics & Tracking
+                </h2>
+                <p className="mb-4">
+                  We use analytics tools to understand how visitors interact with our website.
+                  This helps us improve your experience and our services. We may collect:
+                </p>
+                <ul className="list-disc list-inside mt-4 space-y-2">
+                  <li>Pages visited and time spent on each page</li>
+                  <li>Traffic sources (how you found us)</li>
+                  <li>Geographic location (city/region level)</li>
+                  <li>Device type, browser, and operating system</li>
+                  <li>Click patterns and scroll behavior</li>
+                  <li>Form interactions and conversion data</li>
+                </ul>
+              </section>
+
+              <section>
+                <h2 className="text-xl font-display font-semibold text-white mb-4">
+                  Cookies
                 </h2>
                 <p>
-                  We may use cookies and analytics tools (such as Google Analytics or Vercel
-                  Analytics) to understand how visitors use our website. This helps us improve
-                  the user experience. You can disable cookies in your browser settings.
+                  Cookies are small files stored on your device. We use cookies for analytics
+                  and to remember your preferences. You can disable cookies in your browser
+                  settings, though this may affect some website functionality.
                 </p>
               </section>
 
@@ -101,11 +119,33 @@ export default function PrivacyPage() {
                 <h2 className="text-xl font-display font-semibold text-white mb-4">
                   Third-Party Services
                 </h2>
-                <p>
-                  We may use third-party services for form handling (Formspree), hosting
-                  (Vercel), and analytics. These services have their own privacy policies
-                  governing their use of your data.
+                <p className="mb-4">
+                  We use the following third-party services that may collect data:
                 </p>
+                <ul className="list-disc list-inside mt-4 space-y-2">
+                  <li><strong>Google Analytics</strong> - Website traffic and behavior analytics</li>
+                  <li><strong>Google Search Console</strong> - Search performance data</li>
+                  <li><strong>Microsoft Clarity / Hotjar</strong> - Heatmaps and session recordings</li>
+                  <li><strong>Formspree</strong> - Contact form submissions</li>
+                  <li><strong>Vercel</strong> - Website hosting and performance</li>
+                  <li><strong>Calendly</strong> - Appointment scheduling</li>
+                </ul>
+                <p className="mt-4">
+                  Each service has its own privacy policy governing how they handle your data.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-xl font-display font-semibold text-white mb-4">
+                  Your Choices
+                </h2>
+                <p>You can control your data in several ways:</p>
+                <ul className="list-disc list-inside mt-4 space-y-2">
+                  <li>Disable cookies in your browser settings</li>
+                  <li>Use browser extensions to block trackers</li>
+                  <li>Opt out of Google Analytics at tools.google.com/dlpage/gaoptout</li>
+                  <li>Request deletion of your data by contacting us</li>
+                </ul>
               </section>
 
               <section>
