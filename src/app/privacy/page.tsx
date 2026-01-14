@@ -143,7 +143,7 @@ export default function PrivacyPage() {
                 <ul className="list-disc list-inside mt-4 space-y-2">
                   <li>Disable cookies in your browser settings</li>
                   <li>Use browser extensions to block trackers</li>
-                  <li>Opt out of Google Analytics at tools.google.com/dlpage/gaoptout</li>
+                  <li>Opt out of Google Analytics at <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer" className="text-primary-400 hover:text-primary-300">tools.google.com/dlpage/gaoptout</a></li>
                   <li>Request deletion of your data by contacting us</li>
                 </ul>
               </section>
