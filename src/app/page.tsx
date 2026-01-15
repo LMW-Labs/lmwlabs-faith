@@ -372,16 +372,28 @@ function PortfolioSection() {
               className="card overflow-hidden hover-lift group"
             >
               <div className="flex flex-col lg:flex-row">
-                {/* Color Bar / Image Placeholder */}
-                <div className={`lg:w-80 h-48 lg:h-auto bg-gradient-to-br ${project.color} flex items-center justify-center p-8`}>
-                  <div className="text-center">
-                    <div className="text-white/90 font-display text-2xl font-bold mb-2">
-                      {project.title}
+                {/* Project Image */}
+                <div className="lg:w-96 h-56 lg:h-auto relative overflow-hidden">
+                  {project.image ? (
+                    <Image
+                      src={project.image}
+                      alt={project.title}
+                      fill
+                      className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                    />
+                  ) : (
+                    <div className={`w-full h-full bg-gradient-to-br ${project.color} flex items-center justify-center p-8`}>
+                      <div className="text-center">
+                        <div className="text-white/90 font-display text-2xl font-bold mb-2">
+                          {project.title}
+                        </div>
+                        <div className="text-white/60 text-sm">
+                          {project.category}
+                        </div>
+                      </div>
                     </div>
-                    <div className="text-white/60 text-sm">
-                      {project.category}
-                    </div>
-                  </div>
+                  )}
+                  <div className={`absolute inset-0 bg-gradient-to-r ${project.color} opacity-0 group-hover:opacity-20 transition-opacity duration-300`} />
                 </div>
 
                 {/* Content */}
