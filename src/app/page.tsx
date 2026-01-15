@@ -40,27 +40,14 @@ function Navigation() {
     { href: '#services', label: 'Services' },
     { href: '#portfolio', label: 'Portfolio' },
     { href: '#pricing', label: 'Pricing' },
+    { href: '/blog', label: 'Blog' },
     { href: '#contact', label: 'Contact' },
   ]
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 glass">
       <div className="max-w-7xl mx-auto px-6 py-4">
-        <div className="flex items-center justify-between">
-          {/* Logo */}
-          <a href="#" className="flex items-center gap-3">
-            <Image
-              src="/images/logo.png"
-              alt="LMW Labs"
-              width={56}
-              height={56}
-              className="w-14 h-14 object-contain"
-            />
-            <span className="font-display font-bold text-2xl text-white">
-              LMW <span className="text-primary-400">Labs</span>
-            </span>
-          </a>
-
+        <div className="flex items-center justify-center md:justify-between">
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
@@ -119,7 +106,19 @@ function HeroSection() {
       <div className="absolute inset-0 noise-overlay" />
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-600/20 rounded-full blur-[120px]" />
       <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-accent-500/10 rounded-full blur-[100px]" />
-      
+
+      {/* Large Watermark Logo */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <Image
+          src="/images/logo.png"
+          alt=""
+          width={800}
+          height={800}
+          className="w-[600px] h-[600px] md:w-[800px] md:h-[800px] object-contain opacity-[0.03]"
+          priority
+        />
+      </div>
+
       {/* Grid pattern */}
       <div className="absolute inset-0 opacity-[0.02]" style={{
         backgroundImage: `linear-gradient(rgba(95,111,241,0.3) 1px, transparent 1px),
@@ -132,7 +131,7 @@ function HeroSection() {
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-8 animate-fade-in-up">
             <Zap className="w-4 h-4 text-accent-400" />
-            <span className="text-sm text-gray-300">AI-Powered Development Studio</span>
+            <span className="text-sm text-gray-300">AI Specialist Development Studio</span>
           </div>
 
           {/* Headline */}
@@ -143,8 +142,8 @@ function HeroSection() {
 
           {/* Subheadline */}
           <p className="text-xl md:text-2xl text-gray-400 mb-10 max-w-2xl animate-fade-in-up delay-200">
-            Full-stack development with AI integration. From concept to launch in weeks, not months. 
-            Based in Mississippi, serving clients worldwide.
+            Scalable, production-ready software built by real engineers. No vibe coders here.
+            From concept to launch in weeks, not months.
           </p>
 
           {/* CTAs */}
@@ -307,7 +306,7 @@ function PortfolioSection() {
       color: 'from-pink-500 to-rose-600',
       stats: ['Local SEO', 'Lead Gen', 'Mobile-First'],
       link: 'https://blacktopproz.com/',
-      image: '/images/verbalize.png'
+      image: '/images/blacktopproz.png'
     },
     {
       title: 'FaithFeed',
@@ -316,7 +315,8 @@ function PortfolioSection() {
       tech: ['Flutter', 'Next.js', 'Firebase', 'OpenAI', 'Pinecone'],
       color: 'from-blue-600 to-indigo-600',
       stats: ['31K+ Verses', 'AI Study Partner', 'Cross-Platform'],
-      link: 'https://beta.faithfeed.ai/'
+      link: 'https://beta.faithfeed.ai/',
+      image: '/images/faithfeed.png'
     },
     {
       title: 'KHCL Logistics',
@@ -325,10 +325,11 @@ function PortfolioSection() {
       tech: ['Next.js', 'PostgreSQL', 'Supabase', 'Real-time'],
       color: 'from-emerald-500 to-teal-600',
       stats: ['Instant Quotes', 'Load Board', 'GPS Tracking'],
-      link: 'https://khcllogistics.com/'
+      link: 'https://khcllogistics.com/',
+      image: '/images/khcl.jpg'
     },
     {
-      title: 'Basketball Scouting Platform',
+      title: 'Global Hoops Network',
       category: 'Web Application',
       description: 'Player prospecting system for a former Harlem Globetrotter. Video uploads, coach submissions, AI-powered skill analysis.',
       tech: ['Next.js', 'Firebase', 'Cloudflare R2', 'OpenAI'],
@@ -343,7 +344,8 @@ function PortfolioSection() {
       tech: ['Next.js', 'Tailwind', 'Vercel', 'SEO'],
       color: 'from-amber-500 to-orange-600',
       stats: ['Local SEO', 'Lead Gen', 'Mobile-First'],
-      link: 'https://site-taupe-nine.vercel.app/'
+      link: 'https://site-taupe-nine.vercel.app/',
+      image: '/images/cooper.svg'
     },
   ]
 
