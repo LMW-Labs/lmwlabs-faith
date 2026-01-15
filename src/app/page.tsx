@@ -52,11 +52,11 @@ function Navigation() {
             <Image
               src="/images/logo.png"
               alt="LMW Labs"
-              width={48}
-              height={48}
-              className="w-12 h-12 object-contain"
+              width={56}
+              height={56}
+              className="w-14 h-14 object-contain"
             />
-            <span className="font-display font-bold text-xl text-white">
+            <span className="font-display font-bold text-2xl text-white">
               LMW <span className="text-primary-400">Labs</span>
             </span>
           </a>
@@ -280,16 +280,6 @@ function ServicesSection() {
 function PortfolioSection() {
   const projects = [
     {
-      title: 'THREADRIPPER',
-      category: 'AI Twitter Bot',
-      description: 'AI-powered Twitter bot that detects viral threads in real-time and exposes psychological subtext using Google Gemini. Analyzes power dynamics, emotional manipulation, and hidden meanings.',
-      tech: ['Node.js', 'Google Gemini', 'Cloud Run', 'Twitter API', 'Firestore'],
-      color: 'from-purple-600 to-indigo-600',
-      stats: ['1,247 Threads', '87.3% Accuracy', 'Real-time'],
-      link: 'https://threadripper-demo.lmwlabs.faith/',
-      image: '/images/threadripper.png'
-    },
-    {
       title: 'PropListAI',
       category: 'AI Real Estate Tool',
       description: 'Transform property listings with AI. Save 40+ minutes per listing while generating professional, platform-optimized descriptions for MLS, Zillow, and social media.',
@@ -300,23 +290,23 @@ function PortfolioSection() {
       image: '/images/proplistai.png'
     },
     {
-      title: 'VECTR',
+      title: 'VectrLoad TMS',
       category: 'Data Analytics',
       description: 'Advanced data visualization and analytics platform. Powerful insights, beautiful charts, real-time data processing, and custom dashboard building capabilities.',
       tech: ['React', 'D3.js', 'Analytics', 'Data Viz', 'Dashboard'],
       color: 'from-blue-500 to-cyan-600',
       stats: ['25+ Charts', '100K+ Datasets', 'Real-time'],
-      link: 'https://vectr-demo-4rtzxnjj6-cryptonorths-projects.vercel.app/',
+      link: 'https://vectrloadai-tms.vercel.app/',
       image: '/images/vectr.png'
     },
     {
-      title: 'Verbalize',
-      category: 'AI Voice-to-Code',
-      description: 'Revolutionary web app that transforms natural speech into production-ready code using cutting-edge AI. Supports 6+ programming languages with 90%+ accuracy.',
-      tech: ['React 18', 'Gemini AI', 'Google Cloud', 'Speech API'],
+      title: 'BlacktopProz',
+      category: 'Contractor Website',
+      description: 'Professional website for asphalt and concrete contractors. Service pages, quote request forms, SEO optimized for local search.',
+      tech: ['Next.js', 'Tailwind', 'Vercel', 'SEO'],
       color: 'from-pink-500 to-rose-600',
-      stats: ['6+ Languages', '90%+ Accuracy', '<3s Response'],
-      link: 'https://verbalize-demo-76pcw1wp4-cryptonorths-projects.vercel.app',
+      stats: ['Local SEO', 'Lead Gen', 'Mobile-First'],
+      link: 'https://blacktopproz.com/',
       image: '/images/verbalize.png'
     },
     {
@@ -326,7 +316,7 @@ function PortfolioSection() {
       tech: ['Flutter', 'Next.js', 'Firebase', 'OpenAI', 'Pinecone'],
       color: 'from-blue-600 to-indigo-600',
       stats: ['31K+ Verses', 'AI Study Partner', 'Cross-Platform'],
-      link: '#'
+      link: 'https://beta.faithfeed.ai/'
     },
     {
       title: 'KHCL Logistics',
@@ -335,7 +325,7 @@ function PortfolioSection() {
       tech: ['Next.js', 'PostgreSQL', 'Supabase', 'Real-time'],
       color: 'from-emerald-500 to-teal-600',
       stats: ['Instant Quotes', 'Load Board', 'GPS Tracking'],
-      link: '#'
+      link: 'https://khcllogistics.com/'
     },
     {
       title: 'Basketball Scouting Platform',
@@ -344,7 +334,7 @@ function PortfolioSection() {
       tech: ['Next.js', 'Firebase', 'Cloudflare R2', 'OpenAI'],
       color: 'from-orange-500 to-red-600',
       stats: ['Video Analysis', 'Global Reach', 'Coach Portal'],
-      link: '#'
+      link: 'https://www.globalhoopsnetwork.org/'
     },
     {
       title: 'Cooper Generations Asphalt',
@@ -353,7 +343,7 @@ function PortfolioSection() {
       tech: ['Next.js', 'Tailwind', 'Vercel', 'SEO'],
       color: 'from-amber-500 to-orange-600',
       stats: ['Local SEO', 'Lead Gen', 'Mobile-First'],
-      link: '#'
+      link: 'https://site-taupe-nine.vercel.app/'
     },
   ]
 
@@ -967,11 +957,11 @@ function Footer() {
               <Image
                 src="/images/logo.png"
                 alt="LMW Labs"
-                width={40}
-                height={40}
-                className="w-10 h-10 object-contain"
+                width={48}
+                height={48}
+                className="w-12 h-12 object-contain"
               />
-              <span className="font-display font-bold text-xl text-white">
+              <span className="font-display font-bold text-2xl text-white">
                 LMW Labs
               </span>
             </div>
