@@ -21,6 +21,7 @@ export const metadata: Metadata = {
   },
   other: {
     'contact:email': 'info@lmwlabs.faith',
+    'facebook-domain-verification': 'hvi5hcrvyj64shunrm9bhcenr4614a',
   },
 }
 
