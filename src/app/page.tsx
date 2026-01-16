@@ -319,14 +319,14 @@ function PortfolioSection() {
       image: '/images/faithfeed.png'
     },
     {
-      title: 'KHCL Logistics',
+      title: 'KHCL TMS',
       category: 'Logistics Platform',
-      description: 'Complete freight brokerage platform. Instant quotes, load board, real-time tracking, carrier management.',
+      description: 'Complete freight brokerage TMS. Load management, carrier dispatch, real-time tracking, rate confirmations.',
       tech: ['Next.js', 'PostgreSQL', 'Supabase', 'Real-time'],
       color: 'from-emerald-500 to-teal-600',
-      stats: ['Instant Quotes', 'Load Board', 'GPS Tracking'],
-      link: 'https://khcllogistics.com/',
-      image: '/images/khcl.jpg'
+      stats: ['Load Board', 'Carrier Dispatch', 'GPS Tracking'],
+      link: 'https://freightflow-tms.vercel.app/',
+      image: '/images/khcl-tms.png'
     },
     {
       title: 'Global Hoops Network',
