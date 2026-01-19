@@ -9,17 +9,22 @@ import { supabase } from '@/lib/supabase'
 function AgreementFormContent() {
   const searchParams = useSearchParams()
 
-  // Generate unique agreement number: LMW-YYYYMMDD-HHMMSS
-  const generateAgreementNumber = () => {
+  // Mode: 'quote' for proposal review, 'agreement' for signing
+  const initialMode = searchParams.get('mode') || 'quote'
+  const [mode, setMode] = useState<'quote' | 'agreement'>(initialMode as 'quote' | 'agreement')
+
+  // Generate unique document number
+  const generateDocumentNumber = () => {
     const now = new Date()
     const date = now.toISOString().split('T')[0].replace(/-/g, '')
     const time = now.toTimeString().split(' ')[0].replace(/:/g, '')
-    return `LMW-${date}-${time}`
+    const prefix = mode === 'quote' ? 'QTE' : 'LMW'
+    return `${prefix}-${date}-${time}`
   }
 
   // Pre-fill from URL params (for admin sending to clients)
   const [formData, setFormData] = useState({
-    agreementNumber: generateAgreementNumber(),
+    agreementNumber: generateDocumentNumber(),
     agreementDate: new Date().toISOString().split('T')[0],
     clientBusinessName: searchParams.get('business') || '',
     clientContactName: searchParams.get('contact') || '',
@@ -28,14 +33,16 @@ function AgreementFormContent() {
     clientId: searchParams.get('clientId') || '',
     selectedPackage: searchParams.get('tier') || '',
     customBuildFee: searchParams.get('amount') || '',
-    customBuildDescription: '',
+    customBuildDescription: searchParams.get('description') || '',
+    projectUrl: searchParams.get('projectUrl') || '',
     selectedRevShare: 'growth',
     selectedMaintenance: '',
     summaryBuild: '',
     summaryPremium: '$0',
     summaryMaintenance: '',
     clientTitle: '',
-    acknowledgment: false
+    acknowledgment: false,
+    validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] // 30 days from now
   })
 
   const [signature, setSignature] = useState<string | null>(null)
@@ -43,6 +50,7 @@ function AgreementFormContent() {
   const [showSuccess, setShowSuccess] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [isProcessingPayment, setIsProcessingPayment] = useState(false)
+  const [isDownloadingQuote, setIsDownloadingQuote] = useState(false)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [canvasContext, setCanvasContext] = useState<CanvasRenderingContext2D | null>(null)
 
@@ -213,6 +221,196 @@ function AgreementFormContent() {
     const buildFee = formData.customBuildFee ? parseFloat(formData.customBuildFee) : (pkg?.minPrice || 0)
     // 50% deposit due at signing
     return buildFee / 2
+  }
+
+  const getFullBuildFee = () => {
+    const pkg = packages.find(p => p.value === formData.selectedPackage)
+    return formData.customBuildFee ? parseFloat(formData.customBuildFee) : (pkg?.minPrice || 0)
+  }
+
+  // Download quote PDF (no signature required)
+  const handleDownloadQuote = async () => {
+    setIsDownloadingQuote(true)
+
+    const { jsPDF } = await import('jspdf')
+    const doc = new jsPDF()
+
+    const margin = 20
+    let y = 20
+    const pkg = packages.find(p => p.value === formData.selectedPackage)
+    const buildFee = getFullBuildFee()
+
+    // Header - QUOTE
+    doc.setFontSize(18)
+    doc.setFont('helvetica', 'bold')
+    doc.setTextColor(30, 30, 75)
+    doc.text('PROJECT QUOTE', margin, y)
+    y += 8
+    doc.setFontSize(12)
+    doc.setFont('helvetica', 'normal')
+    doc.setTextColor(100)
+    doc.text('LMW Labs LLC', margin, y)
+    y += 10
+
+    doc.setTextColor(0)
+    doc.setFontSize(10)
+    doc.text(`Quote #: ${formData.agreementNumber}`, margin, y)
+    y += 6
+    doc.text(`Date: ${formData.agreementDate}`, margin, y)
+    y += 6
+    doc.setTextColor(220, 38, 38) // red
+    doc.text(`Valid Until: ${formData.validUntil}`, margin, y)
+    doc.setTextColor(0)
+    y += 12
+
+    // Client Info
+    doc.setFontSize(12)
+    doc.setFont('helvetica', 'bold')
+    doc.setTextColor(30, 30, 75)
+    doc.text('PREPARED FOR', margin, y)
+    y += 7
+    doc.setFontSize(10)
+    doc.setFont('helvetica', 'normal')
+    doc.setTextColor(0)
+    doc.text(`Business: ${formData.clientBusinessName || 'TBD'}`, margin, y)
+    y += 6
+    doc.text(`Contact: ${formData.clientContactName || 'TBD'}`, margin, y)
+    y += 6
+    doc.text(`Email: ${formData.clientEmail || 'TBD'}  |  Phone: ${formData.clientPhone || 'TBD'}`, margin, y)
+    y += 12
+
+    // Project URL
+    if (formData.projectUrl) {
+      doc.setFontSize(12)
+      doc.setFont('helvetica', 'bold')
+      doc.setTextColor(30, 30, 75)
+      doc.text('PROJECT URL', margin, y)
+      y += 7
+      doc.setFontSize(10)
+      doc.setFont('helvetica', 'normal')
+      doc.setTextColor(0, 102, 204) // blue for link
+      doc.text(formData.projectUrl, margin, y)
+      doc.setTextColor(0)
+      y += 12
+    }
+
+    // Selected Package
+    doc.setFontSize(12)
+    doc.setFont('helvetica', 'bold')
+    doc.setTextColor(30, 30, 75)
+    doc.text('PROPOSED SERVICES', margin, y)
+    y += 7
+    doc.setFontSize(10)
+    doc.setFont('helvetica', 'normal')
+    doc.setTextColor(0)
+
+    doc.text(`Package: ${pkg?.label || 'Custom'} (${pkg?.priceRange || 'Custom Pricing'})`, margin, y)
+    y += 6
+    doc.text(`Build Fee: $${buildFee.toLocaleString()}`, margin, y)
+    y += 6
+    doc.text(`Monthly Fee: ${pkg?.monthly || 'TBD'}`, margin, y)
+    y += 6
+
+    if (formData.customBuildDescription) {
+      y += 4
+      doc.setFont('helvetica', 'italic')
+      const descLines = doc.splitTextToSize(`Services: ${formData.customBuildDescription}`, 170)
+      descLines.forEach((line: string) => {
+        doc.text(line, margin, y)
+        y += 5
+      })
+      doc.setFont('helvetica', 'normal')
+    }
+
+    // Affiliate Revenue
+    y += 6
+    doc.text('Affiliate Revenue Split:', margin, y)
+    y += 6
+    if (pkg?.value === 'self-managed') {
+      doc.text('  Client keeps 100% of affiliate revenue', margin, y)
+    } else if (pkg?.value === 'growth') {
+      doc.text('  70% LMW Labs / 30% Client', margin, y)
+    } else if (pkg?.value === 'authority') {
+      doc.text('  LMW Labs keeps 100% of affiliate revenue', margin, y)
+    } else {
+      doc.text('  To be determined', margin, y)
+    }
+    y += 12
+
+    // Investment Summary
+    doc.setFontSize(12)
+    doc.setFont('helvetica', 'bold')
+    doc.setTextColor(30, 30, 75)
+    doc.text('INVESTMENT SUMMARY', margin, y)
+    y += 7
+    doc.setFontSize(10)
+    doc.setFont('helvetica', 'normal')
+    doc.setTextColor(0)
+
+    doc.text(`Total Build Fee: $${buildFee.toLocaleString()}`, margin, y)
+    y += 6
+    doc.text(`Monthly Fee: ${pkg?.monthly || 'TBD'}`, margin, y)
+    y += 8
+    doc.setFont('helvetica', 'bold')
+    doc.text(`DEPOSIT (50%): $${calculateTotal().toLocaleString()}`, margin, y)
+    y += 6
+    doc.setFont('helvetica', 'normal')
+    doc.text(`Balance due upon completion: $${calculateTotal().toLocaleString()}`, margin, y)
+    y += 15
+
+    // Next Steps
+    doc.setFontSize(12)
+    doc.setFont('helvetica', 'bold')
+    doc.setTextColor(30, 30, 75)
+    doc.text('NEXT STEPS', margin, y)
+    y += 7
+    doc.setFontSize(10)
+    doc.setFont('helvetica', 'normal')
+    doc.setTextColor(0)
+
+    const steps = [
+      '1. Review this quote and let us know if you have questions',
+      '2. Once approved, we\'ll send the official agreement to sign',
+      '3. Pay the 50% deposit to begin work',
+      '4. Project kicks off within 48 hours of deposit'
+    ]
+    steps.forEach(step => {
+      doc.text(step, margin, y)
+      y += 6
+    })
+    y += 10
+
+    // Footer note
+    doc.setFontSize(9)
+    doc.setTextColor(100)
+    doc.setFont('helvetica', 'italic')
+    doc.text('This is a quote only and does not constitute a binding agreement.', margin, y)
+    y += 5
+    doc.text(`Quote valid until ${formData.validUntil}. Prices subject to change after this date.`, margin, y)
+
+    // Footer
+    doc.setFont('helvetica', 'normal')
+    doc.text('LMW Labs LLC | Brandon, Mississippi | info@lmwlabs.faith', margin, 280)
+
+    // Save
+    const filename = formData.clientBusinessName
+      ? `LMW_Labs_Quote_${formData.clientBusinessName.replace(/\s+/g, '_')}.pdf`
+      : 'LMW_Labs_Quote.pdf'
+    doc.save(filename)
+    setIsDownloadingQuote(false)
+  }
+
+  // Convert quote to agreement mode
+  const handleProceedToAgreement = () => {
+    setMode('agreement')
+    // Update document number to agreement format
+    const now = new Date()
+    const date = now.toISOString().split('T')[0].replace(/-/g, '')
+    const time = now.toTimeString().split(' ')[0].replace(/:/g, '')
+    setFormData(prev => ({
+      ...prev,
+      agreementNumber: `LMW-${date}-${time}`
+    }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -428,19 +626,21 @@ function AgreementFormContent() {
     setShowSuccess(true)
   }
 
-  const handlePayNow = async () => {
+  const [paymentType, setPaymentType] = useState<'deposit' | 'full'>('deposit')
+
+  const handlePayNowWithAmount = async (payFull: boolean) => {
     setIsProcessingPayment(true)
     try {
       const pkg = packages.find(p => p.value === formData.selectedPackage)
       const buildFee = formData.customBuildFee ? parseFloat(formData.customBuildFee) : (pkg?.minPrice || 0)
-      const depositAmount = buildFee / 2
+      const paymentAmount = payFull ? buildFee : buildFee / 2
 
       const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           tier: formData.selectedPackage,
-          amount: depositAmount,
+          amount: paymentAmount,
           customerEmail: formData.clientEmail,
           customerName: formData.clientContactName,
         }),
@@ -480,13 +680,45 @@ function AgreementFormContent() {
 
           {/* Payment Section */}
           <div className="bg-gray-50 rounded-xl p-4 mb-6 text-left">
-            <h3 className="font-semibold text-gray-800 mb-2">Deposit Due</h3>
-            <div className="flex justify-between items-center mb-3">
-              <span className="text-gray-600">50% of {formData.summaryBuild}</span>
-              <span className="text-xl font-bold text-green-700">${depositAmount.toLocaleString()}</span>
+            <h3 className="font-semibold text-gray-800 mb-3">Payment Options</h3>
+
+            {/* Payment Type Toggle */}
+            <div className="flex gap-2 mb-4">
+              <button
+                type="button"
+                onClick={() => setPaymentType('deposit')}
+                className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition ${
+                  paymentType === 'deposit'
+                    ? 'bg-green-600 text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                50% Deposit
+              </button>
+              <button
+                type="button"
+                onClick={() => setPaymentType('full')}
+                className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition ${
+                  paymentType === 'full'
+                    ? 'bg-green-600 text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                Pay in Full
+              </button>
             </div>
+
+            <div className="flex justify-between items-center mb-3">
+              <span className="text-gray-600">
+                {paymentType === 'deposit' ? '50% Deposit' : 'Full Amount'}
+              </span>
+              <span className="text-xl font-bold text-green-700">
+                ${paymentType === 'deposit' ? depositAmount.toLocaleString() : buildFee.toLocaleString()}
+              </span>
+            </div>
+
             <button
-              onClick={handlePayNow}
+              onClick={() => handlePayNowWithAmount(paymentType === 'full')}
               disabled={isProcessingPayment}
               className="w-full bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
@@ -503,7 +735,7 @@ function AgreementFormContent() {
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                   </svg>
-                  Pay Deposit Now
+                  Pay {paymentType === 'deposit' ? 'Deposit' : 'Full Amount'} Now
                 </>
               )}
             </button>
@@ -540,9 +772,45 @@ function AgreementFormContent() {
               className="mx-auto"
             />
           </Link>
-          <h1 className="text-3xl font-bold text-white mb-2">Website Services Agreement</h1>
+
+          {/* Mode Toggle */}
+          <div className="flex justify-center gap-2 mb-4">
+            <button
+              type="button"
+              onClick={() => setMode('quote')}
+              className={`px-4 py-2 rounded-lg font-medium transition ${
+                mode === 'quote'
+                  ? 'bg-amber-500 text-white'
+                  : 'bg-primary-800/50 text-gray-300 hover:bg-primary-800'
+              }`}
+            >
+              Quote
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode('agreement')}
+              className={`px-4 py-2 rounded-lg font-medium transition ${
+                mode === 'agreement'
+                  ? 'bg-green-600 text-white'
+                  : 'bg-primary-800/50 text-gray-300 hover:bg-primary-800'
+              }`}
+            >
+              Agreement
+            </button>
+          </div>
+
+          <h1 className="text-3xl font-bold text-white mb-2">
+            {mode === 'quote' ? 'Project Quote' : 'Website Services Agreement'}
+          </h1>
           <p className="text-primary-300">LMW Labs LLC</p>
-          <p className="text-primary-400 text-sm mt-2">Agreement #: {formData.agreementNumber}</p>
+          <p className="text-primary-400 text-sm mt-2">
+            {mode === 'quote' ? 'Quote' : 'Agreement'} #: {formData.agreementNumber}
+          </p>
+          {mode === 'quote' && (
+            <p className="text-amber-400 text-sm mt-1">
+              Valid until: {formData.validUntil}
+            </p>
+          )}
         </div>
 
         <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-2xl overflow-hidden">
@@ -607,6 +875,23 @@ function AgreementFormContent() {
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900"
                 />
               </div>
+            </div>
+          </div>
+
+          {/* Project URL */}
+          <div className="p-6 border-b border-gray-100">
+            <h2 className="text-lg font-bold text-gray-900 mb-4">Project Details</h2>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Project URL (if applicable)</label>
+              <input
+                type="url"
+                name="projectUrl"
+                value={formData.projectUrl}
+                onChange={handleInputChange}
+                placeholder="e.g., https://mywebsite.com"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900"
+              />
+              <p className="text-xs text-gray-500 mt-1">The domain or URL where the project will be deployed</p>
             </div>
           </div>
 
@@ -729,66 +1014,116 @@ function AgreementFormContent() {
             </div>
           </div>
 
-          {/* Signature */}
-          <div className="p-6 border-b border-gray-100">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Your Signature *</h2>
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-2 bg-white">
-              <canvas
-                ref={canvasRef}
-                width={500}
-                height={150}
-                className="w-full touch-none cursor-crosshair bg-gray-50 rounded"
-                style={{ maxHeight: '150px' }}
-                onMouseDown={startDrawing}
-                onMouseMove={draw}
-                onMouseUp={stopDrawing}
-                onMouseLeave={stopDrawing}
-                onTouchStart={startDrawing}
-                onTouchMove={draw}
-                onTouchEnd={stopDrawing}
-              />
+          {/* Signature - Only in Agreement Mode */}
+          {mode === 'agreement' && (
+            <div className="p-6 border-b border-gray-100">
+              <h2 className="text-lg font-bold text-gray-900 mb-4">Your Signature *</h2>
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-2 bg-white">
+                <canvas
+                  ref={canvasRef}
+                  width={500}
+                  height={150}
+                  className="w-full touch-none cursor-crosshair bg-gray-50 rounded"
+                  style={{ maxHeight: '150px' }}
+                  onMouseDown={startDrawing}
+                  onMouseMove={draw}
+                  onMouseUp={stopDrawing}
+                  onMouseLeave={stopDrawing}
+                  onTouchStart={startDrawing}
+                  onTouchMove={draw}
+                  onTouchEnd={stopDrawing}
+                />
+              </div>
+              <div className="flex justify-between items-center mt-2">
+                <p className="text-sm text-gray-500">Draw your signature above (works on mobile too)</p>
+                <button
+                  type="button"
+                  onClick={clearSignature}
+                  className="text-sm text-red-600 hover:text-red-700 font-medium"
+                >
+                  Clear Signature
+                </button>
+              </div>
             </div>
-            <div className="flex justify-between items-center mt-2">
-              <p className="text-sm text-gray-500">Draw your signature above (works on mobile too)</p>
-              <button
-                type="button"
-                onClick={clearSignature}
-                className="text-sm text-red-600 hover:text-red-700 font-medium"
-              >
-                Clear Signature
-              </button>
+          )}
+
+          {/* Acknowledgment - Only in Agreement Mode */}
+          {mode === 'agreement' && (
+            <div className="p-6 border-b border-gray-100">
+              <label className="flex items-start cursor-pointer">
+                <input
+                  type="checkbox"
+                  name="acknowledgment"
+                  checked={formData.acknowledgment}
+                  onChange={handleInputChange}
+                  className="mt-1 mr-3 w-5 h-5"
+                />
+                <span className="text-sm text-gray-700">
+                  I have read, understand, and agree to all terms and conditions in this Agreement,
+                  including the payment terms, service scope, and affiliate revenue structure as described.
+                </span>
+              </label>
             </div>
-          </div>
+          )}
 
-          {/* Acknowledgment */}
-          <div className="p-6 border-b border-gray-100">
-            <label className="flex items-start cursor-pointer">
-              <input
-                type="checkbox"
-                name="acknowledgment"
-                checked={formData.acknowledgment}
-                onChange={handleInputChange}
-                className="mt-1 mr-3 w-5 h-5"
-              />
-              <span className="text-sm text-gray-700">
-                I have read, understand, and agree to all terms and conditions in this Agreement,
-                including the payment terms, service scope, and affiliate revenue structure as described.
-              </span>
-            </label>
-          </div>
-
-          {/* Submit */}
+          {/* Submit / Download Buttons */}
           <div className="p-6 bg-gray-50">
-            <button
-              type="submit"
-              disabled={isSaving}
-              className="w-full bg-primary-600 text-white py-4 rounded-lg font-bold text-lg hover:bg-primary-700 transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isSaving ? 'Processing...' : 'Sign & Download Agreement'}
-            </button>
-            <p className="text-center text-sm text-gray-500 mt-3">
-              Your signed agreement will be saved and downloaded as a PDF
-            </p>
+            {mode === 'quote' ? (
+              <>
+                <div className="flex gap-3 mb-4">
+                  <button
+                    type="button"
+                    onClick={handleDownloadQuote}
+                    disabled={isDownloadingQuote}
+                    className="flex-1 bg-amber-500 text-white py-4 rounded-lg font-bold text-lg hover:bg-amber-600 transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  >
+                    {isDownloadingQuote ? (
+                      'Generating...'
+                    ) : (
+                      <>
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Download Quote PDF
+                      </>
+                    )}
+                  </button>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleProceedToAgreement}
+                  className="w-full bg-green-600 text-white py-4 rounded-lg font-bold text-lg hover:bg-green-700 transition shadow-lg flex items-center justify-center gap-2"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Approve & Sign Agreement
+                </button>
+                <p className="text-center text-sm text-gray-500 mt-3">
+                  Review the quote above, then proceed to sign when ready
+                </p>
+              </>
+            ) : (
+              <>
+                <button
+                  type="submit"
+                  disabled={isSaving}
+                  className="w-full bg-green-600 text-white py-4 rounded-lg font-bold text-lg hover:bg-green-700 transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isSaving ? 'Processing...' : 'Sign & Download Agreement'}
+                </button>
+                <p className="text-center text-sm text-gray-500 mt-3">
+                  Your signed agreement will be saved and downloaded as a PDF
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setMode('quote')}
+                  className="w-full mt-3 text-gray-500 hover:text-gray-700 text-sm font-medium"
+                >
+                  ← Back to Quote View
+                </button>
+              </>
+            )}
           </div>
         </form>
 

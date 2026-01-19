@@ -76,6 +76,9 @@ export default function AdminDashboard() {
   const [agreementClient, setAgreementClient] = useState<Client | null>(null)
   const [agreementTier, setAgreementTier] = useState('growth')
   const [agreementAmount, setAgreementAmount] = useState('')
+  const [agreementMode, setAgreementMode] = useState<'quote' | 'agreement'>('quote')
+  const [agreementDescription, setAgreementDescription] = useState('')
+  const [agreementProjectUrl, setAgreementProjectUrl] = useState('')
   const [copiedLink, setCopiedLink] = useState(false)
 
   // Check if user is authorized admin
@@ -154,7 +157,10 @@ export default function AdminDashboard() {
       phone: client.phone || '',
       clientId: client.id || '',
       tier: agreementTier,
-      ...(agreementAmount && { amount: agreementAmount })
+      mode: agreementMode,
+      ...(agreementAmount && { amount: agreementAmount }),
+      ...(agreementDescription && { description: agreementDescription }),
+      ...(agreementProjectUrl && { projectUrl: agreementProjectUrl })
     })
     return `${baseUrl}/agreement?${params.toString()}`
   }
@@ -171,6 +177,9 @@ export default function AdminDashboard() {
     setAgreementClient(client)
     setAgreementTier('growth')
     setAgreementAmount('')
+    setAgreementMode('quote')
+    setAgreementDescription('')
+    setAgreementProjectUrl('')
     setCopiedLink(false)
     setShowAgreementModal(true)
   }
@@ -574,11 +583,43 @@ export default function AdminDashboard() {
                   &times;
                 </button>
               </div>
-              <div className="p-6 space-y-4">
+              <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
                 <div>
                   <p className="text-sm text-gray-400 mb-1">Client</p>
                   <p className="text-white font-medium">{agreementClient.business_name || agreementClient.contact_name}</p>
                   <p className="text-gray-400 text-sm">{agreementClient.email}</p>
+                </div>
+
+                {/* Document Type */}
+                <div>
+                  <label className="block text-sm text-gray-400 mb-2">Document Type</label>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setAgreementMode('quote')}
+                      className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors ${
+                        agreementMode === 'quote'
+                          ? 'bg-amber-500 text-white'
+                          : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                      }`}
+                    >
+                      Quote
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setAgreementMode('agreement')}
+                      className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors ${
+                        agreementMode === 'agreement'
+                          ? 'bg-green-600 text-white'
+                          : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                      }`}
+                    >
+                      Agreement
+                    </button>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {agreementMode === 'quote' ? 'Client reviews proposal before signing' : 'Client signs immediately'}
+                  </p>
                 </div>
 
                 <div>
@@ -591,22 +632,49 @@ export default function AdminDashboard() {
                     <option value="self-managed">Self-Managed ($2,500 - $4,000)</option>
                     <option value="growth">Growth ($1,500 - $2,500)</option>
                     <option value="authority">Authority ($500 - $1,000)</option>
+                    <option value="custom">Custom Build</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-sm text-gray-400 mb-2">Custom Amount (optional)</label>
+                  <label className="block text-sm text-gray-400 mb-2">
+                    {agreementTier === 'custom' ? 'Custom Amount *' : 'Custom Amount (optional)'}
+                  </label>
                   <input
                     type="number"
                     value={agreementAmount}
                     onChange={(e) => setAgreementAmount(e.target.value)}
-                    placeholder="Leave blank for tier default"
+                    placeholder={agreementTier === 'custom' ? 'Enter amount' : 'Leave blank for tier default'}
                     className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
+                <div>
+                  <label className="block text-sm text-gray-400 mb-2">Project URL (optional)</label>
+                  <input
+                    type="url"
+                    value={agreementProjectUrl}
+                    onChange={(e) => setAgreementProjectUrl(e.target.value)}
+                    placeholder="e.g., https://clientwebsite.com"
+                    className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm text-gray-400 mb-2">Project Description (optional)</label>
+                  <textarea
+                    value={agreementDescription}
+                    onChange={(e) => setAgreementDescription(e.target.value)}
+                    placeholder="Brief description of services..."
+                    rows={2}
+                    className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500 resize-none"
+                  />
+                </div>
+
                 <div className="pt-4 border-t border-gray-800">
-                  <p className="text-sm text-gray-400 mb-2">Agreement Link</p>
+                  <p className="text-sm text-gray-400 mb-2">
+                    {agreementMode === 'quote' ? 'Quote' : 'Agreement'} Link
+                  </p>
                   <div className="flex gap-2">
                     <input
                       type="text"
