@@ -104,7 +104,11 @@ function AgreementFormContent() {
     const maint = maintenanceOptions.find(m => m.value === formData.selectedMaintenance)
 
     const buildFee = formData.customBuildFee ? parseFloat(formData.customBuildFee) : (pkg?.minPrice || 0)
-    const maintPrice = maint && maint.value !== 'included' ? `$${maint.price}/hr` : (pkg?.monthly || '$0')
+    const maintPrice = maint && maint.value !== 'included'
+      ? `$${maint.price}/hr`
+      : formData.selectedPackage === 'custom'
+        ? 'TBD'
+        : (pkg?.monthly || '$0')
 
     setFormData(prev => ({
       ...prev,
@@ -121,11 +125,23 @@ function AgreementFormContent() {
     // When package changes, update rev share automatically
     if (name === 'selectedPackage' && typeof value === 'string') {
       const pkg = packages.find(p => p.value === value)
-      setFormData(prev => ({
-        ...prev,
-        selectedPackage: value,
-        selectedRevShare: pkg?.revShare || 'growth'
-      }))
+      if (value === 'custom') {
+        // Custom package selected - clear customBuildFee to let user enter it
+        setFormData(prev => ({
+          ...prev,
+          selectedPackage: value,
+          selectedRevShare: 'custom',
+          customBuildFee: prev.customBuildFee // Keep any existing custom fee
+        }))
+      } else {
+        // Standard package selected - clear customBuildFee
+        setFormData(prev => ({
+          ...prev,
+          selectedPackage: value,
+          selectedRevShare: pkg?.revShare || 'growth',
+          customBuildFee: '' // Clear custom fee when selecting a standard package
+        }))
+      }
     } else if (name === 'acknowledgment') {
       setFormData(prev => ({
         ...prev,
@@ -467,7 +483,7 @@ function AgreementFormContent() {
             <h3 className="font-semibold text-gray-800 mb-2">Deposit Due</h3>
             <div className="flex justify-between items-center mb-3">
               <span className="text-gray-600">50% of {formData.summaryBuild}</span>
-              <span className="text-xl font-bold text-primary-600">${depositAmount.toLocaleString()}</span>
+              <span className="text-xl font-bold text-green-700">${depositAmount.toLocaleString()}</span>
             </div>
             <button
               onClick={handlePayNow}
@@ -532,7 +548,7 @@ function AgreementFormContent() {
         <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-2xl overflow-hidden">
           {/* Client Information */}
           <div className="p-6 border-b border-gray-100">
-            <h2 className="text-lg font-bold text-primary-900 mb-4">Client Information</h2>
+            <h2 className="text-lg font-bold text-gray-900 mb-4">Client Information</h2>
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Business Name *</label>
@@ -596,7 +612,7 @@ function AgreementFormContent() {
 
           {/* Website Package */}
           <div className="p-6 border-b border-gray-100">
-            <h2 className="text-lg font-bold text-primary-900 mb-4">Website Package *</h2>
+            <h2 className="text-lg font-bold text-gray-900 mb-4">Website Package *</h2>
             <div className="space-y-3">
               {packages.map(pkg => (
                 <label
@@ -621,7 +637,7 @@ function AgreementFormContent() {
                       <div className="flex justify-between items-start">
                         <div className="font-semibold text-gray-800">{pkg.label}</div>
                         <div className="text-right">
-                          <div className="font-bold text-primary-600">{pkg.priceRange}</div>
+                          <div className="font-bold text-green-700">{pkg.priceRange}</div>
                           <div className="text-sm text-gray-500">+ {pkg.monthly}</div>
                         </div>
                       </div>
@@ -630,17 +646,49 @@ function AgreementFormContent() {
                   </div>
                 </label>
               ))}
-            </div>
-            <div className="mt-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Custom Build Fee (if different from package)</label>
-              <input
-                type="number"
-                name="customBuildFee"
-                value={formData.customBuildFee}
-                onChange={handleInputChange}
-                placeholder="Enter exact amount"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900"
-              />
+              {/* Custom Build Option */}
+              <label
+                className={`block p-4 border-2 rounded-lg cursor-pointer transition ${
+                  formData.selectedPackage === 'custom'
+                    ? 'border-primary-500 bg-primary-50'
+                    : 'border-gray-200 hover:border-primary-300'
+                }`}
+              >
+                <div className="flex items-start">
+                  <input
+                    type="radio"
+                    name="selectedPackage"
+                    value="custom"
+                    checked={formData.selectedPackage === 'custom'}
+                    onChange={handleInputChange}
+                    className="mt-1 mr-3"
+                  />
+                  <div className="flex-1">
+                    <div className="flex justify-between items-start">
+                      <div className="font-semibold text-gray-800">Custom Build</div>
+                      <div className="text-right">
+                        <div className="font-bold text-green-700">Custom Price</div>
+                        <div className="text-sm text-gray-500">Negotiated</div>
+                      </div>
+                    </div>
+                    <div className="text-sm text-gray-500 mt-1">Custom project with negotiated pricing and scope.</div>
+                    {formData.selectedPackage === 'custom' && (
+                      <div className="mt-3">
+                        <input
+                          type="number"
+                          name="customBuildFee"
+                          value={formData.customBuildFee}
+                          onChange={handleInputChange}
+                          placeholder="Enter custom amount"
+                          required={formData.selectedPackage === 'custom'}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900"
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </label>
             </div>
             <div className="mt-4">
               <label className="block text-sm font-medium text-gray-700 mb-1">Description of Services</label>
@@ -657,7 +705,7 @@ function AgreementFormContent() {
 
           {/* Investment Summary */}
           <div className="p-6 border-b border-gray-100 bg-gray-50">
-            <h2 className="text-lg font-bold text-primary-900 mb-4">Investment Summary</h2>
+            <h2 className="text-lg font-bold text-gray-900 mb-4">Investment Summary</h2>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-gray-600">Website Build Fee:</span>
@@ -666,13 +714,15 @@ function AgreementFormContent() {
               <div className="flex justify-between">
                 <span className="text-gray-600">Monthly Fee:</span>
                 <span className="font-semibold text-gray-900">
-                  {packages.find(p => p.value === formData.selectedPackage)?.monthly || '—'}
+                  {formData.selectedPackage === 'custom'
+                    ? 'TBD'
+                    : packages.find(p => p.value === formData.selectedPackage)?.monthly || '—'}
                 </span>
               </div>
               <div className="border-t border-gray-300 pt-2 mt-2">
                 <div className="flex justify-between text-base">
                   <span className="font-bold text-gray-800">Deposit Due at Signing (50%):</span>
-                  <span className="font-bold text-primary-600">${calculateTotal().toLocaleString()}</span>
+                  <span className="font-bold text-green-700">${calculateTotal().toLocaleString()}</span>
                 </div>
                 <p className="text-xs text-gray-500 mt-1">Balance due upon project completion</p>
               </div>
@@ -681,7 +731,7 @@ function AgreementFormContent() {
 
           {/* Signature */}
           <div className="p-6 border-b border-gray-100">
-            <h2 className="text-lg font-bold text-primary-900 mb-4">Your Signature *</h2>
+            <h2 className="text-lg font-bold text-gray-900 mb-4">Your Signature *</h2>
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-2 bg-white">
               <canvas
                 ref={canvasRef}

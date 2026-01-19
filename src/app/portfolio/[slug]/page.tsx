@@ -329,7 +329,7 @@ export default async function ProjectPage({
               </span>
             </Link>
             <Link
-              href="/#portfolio"
+              href="/portfolio"
               className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
@@ -471,10 +471,10 @@ export default async function ProjectPage({
             Let&apos;s discuss your project and create a scalable solution that grows with your business.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/#contact" className="btn-primary">
+            <Link href="/contact" className="btn-accent">
               Start Your Project
             </Link>
-            <Link href="/#portfolio" className="btn-secondary">
+            <Link href="/portfolio" className="btn-secondary">
               View More Projects
             </Link>
           </div>
