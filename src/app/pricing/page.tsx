@@ -108,6 +108,7 @@ export default function PricingPage() {
         { text: 'Ongoing SEO', included: false },
       ],
       href: '/services/self-managed',
+      checkoutHref: '/checkout?tier=self-managed',
       popular: false
     },
     {
@@ -129,6 +130,7 @@ export default function PricingPage() {
         { text: 'Monthly analytics reports', included: true },
       ],
       href: '/services/growth',
+      checkoutHref: '/checkout?tier=growth',
       popular: true
     },
     {
@@ -152,6 +154,7 @@ export default function PricingPage() {
         { text: 'Quarterly strategy calls', included: true },
       ],
       href: '/services/authority',
+      checkoutHref: '/checkout?tier=authority',
       popular: false
     }
   ]
@@ -240,12 +243,20 @@ export default function PricingPage() {
                   ))}
                 </ul>
 
-                <Link
-                  href={tier.href}
-                  className={`w-full text-center block ${tier.popular ? 'btn-accent' : 'btn-secondary'}`}
-                >
-                  Learn More
-                </Link>
+                <div className="space-y-3">
+                  <Link
+                    href={tier.checkoutHref}
+                    className={`w-full text-center block ${tier.popular ? 'btn-accent' : 'btn-secondary'}`}
+                  >
+                    Get Started
+                  </Link>
+                  <Link
+                    href={tier.href}
+                    className="w-full text-center block text-sm text-gray-400 hover:text-white transition-colors"
+                  >
+                    Learn More →
+                  </Link>
+                </div>
               </div>
             ))}
           </div>

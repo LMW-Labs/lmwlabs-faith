@@ -1,0 +1,135 @@
+import { Metadata } from 'next'
+import Link from 'next/link'
+import Image from 'next/image'
+import { CheckCircle, ArrowRight, Mail, Github, Twitter } from 'lucide-react'
+
+export const metadata: Metadata = {
+  title: 'Payment Successful | LMW Labs',
+  description: 'Thank you for your payment. We will be in touch shortly to get started on your project.',
+}
+
+function Navigation() {
+  const navLinks = [
+    { href: '/services', label: 'Services' },
+    { href: '/pricing', label: 'Pricing' },
+    { href: '/portfolio', label: 'Portfolio' },
+    { href: '/about', label: 'About' },
+    { href: '/blog', label: 'Blog' },
+    { href: '/contact', label: 'Contact' },
+  ]
+
+  return (
+    <nav className="fixed top-0 left-0 right-0 z-50 glass">
+      <div className="max-w-7xl mx-auto px-6 py-4">
+        <div className="flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-3">
+            <Image src="/images/logo.png" alt="LMW Labs" width={40} height={40} className="w-10 h-10 object-contain" />
+            <span className="font-display font-bold text-xl text-white">LMW Labs</span>
+          </Link>
+          <div className="hidden md:flex items-center gap-8">
+            {navLinks.map((link) => (
+              <Link key={link.href} href={link.href} className="text-gray-300 hover:text-white transition-colors font-medium">{link.label}</Link>
+            ))}
+          </div>
+        </div>
+      </div>
+    </nav>
+  )
+}
+
+function Footer() {
+  return (
+    <footer className="py-16 border-t border-primary-900/30">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="grid md:grid-cols-4 gap-12 mb-12">
+          <div className="md:col-span-2">
+            <div className="flex items-center gap-3 mb-4">
+              <Image src="/images/logo.png" alt="LMW Labs" width={48} height={48} className="w-12 h-12 object-contain" />
+              <span className="font-display font-bold text-2xl text-white">LMW Labs</span>
+            </div>
+            <p className="text-gray-400 mb-6 max-w-md">Professional websites that rank, attract customers, and generate revenue.</p>
+            <div className="flex gap-4">
+              <a href="https://github.com/LMW-Labs" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-lg bg-primary-900/30 flex items-center justify-center text-gray-400 hover:text-white hover:bg-primary-800/50 transition-all"><Github className="w-5 h-5" /></a>
+              <a href="https://x.com/LMW_Labs" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-lg bg-primary-900/30 flex items-center justify-center text-gray-400 hover:text-white hover:bg-primary-800/50 transition-all"><Twitter className="w-5 h-5" /></a>
+              <a href="mailto:info@lmwlabs.faith" className="w-10 h-10 rounded-lg bg-primary-900/30 flex items-center justify-center text-gray-400 hover:text-white hover:bg-primary-800/50 transition-all"><Mail className="w-5 h-5" /></a>
+            </div>
+          </div>
+          <div>
+            <h3 className="font-display font-semibold text-white mb-4">Services</h3>
+            <ul className="space-y-3">
+              <li><Link href="/services/self-managed" className="text-gray-400 hover:text-white transition-colors">Self-Managed</Link></li>
+              <li><Link href="/services/growth" className="text-gray-400 hover:text-white transition-colors">Growth Tier</Link></li>
+              <li><Link href="/services/authority" className="text-gray-400 hover:text-white transition-colors">Authority Tier</Link></li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="font-display font-semibold text-white mb-4">Company</h3>
+            <ul className="space-y-3">
+              <li><Link href="/about" className="text-gray-400 hover:text-white transition-colors">About Us</Link></li>
+              <li><Link href="/portfolio" className="text-gray-400 hover:text-white transition-colors">Portfolio</Link></li>
+              <li><Link href="/contact" className="text-gray-400 hover:text-white transition-colors">Contact</Link></li>
+            </ul>
+          </div>
+        </div>
+        <div className="pt-8 border-t border-primary-900/20 text-center">
+          <p className="text-gray-500 text-sm">© {new Date().getFullYear()} LMW Labs LLC. Brandon, Mississippi.</p>
+        </div>
+      </div>
+    </footer>
+  )
+}
+
+export default function CheckoutSuccessPage() {
+  return (
+    <main>
+      <Navigation />
+
+      <section className="pt-32 pb-24 section-dark relative min-h-screen">
+        <div className="absolute inset-0 noise-overlay" />
+        <div className="relative max-w-2xl mx-auto px-6 text-center">
+          <div className="w-20 h-20 rounded-full bg-accent-400/20 flex items-center justify-center mx-auto mb-8">
+            <CheckCircle className="w-10 h-10 text-accent-400" />
+          </div>
+
+          <h1 className="font-display text-4xl md:text-5xl font-bold text-white mb-6">
+            Payment Successful!
+          </h1>
+
+          <p className="text-xl text-gray-400 mb-8">
+            Thank you for your payment. We've received your order and will be in touch within 24 hours to kick off your project.
+          </p>
+
+          <div className="card p-8 mb-10">
+            <h2 className="font-display text-xl font-semibold text-white mb-4">What Happens Next?</h2>
+            <ul className="text-left space-y-4 text-gray-300">
+              <li className="flex items-start gap-3">
+                <span className="w-6 h-6 rounded-full bg-accent-400 text-primary-950 flex items-center justify-center text-sm font-bold flex-shrink-0">1</span>
+                <span>You'll receive a confirmation email with your receipt</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="w-6 h-6 rounded-full bg-accent-400 text-primary-950 flex items-center justify-center text-sm font-bold flex-shrink-0">2</span>
+                <span>We'll reach out within 24 hours to schedule a discovery call</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="w-6 h-6 rounded-full bg-accent-400 text-primary-950 flex items-center justify-center text-sm font-bold flex-shrink-0">3</span>
+                <span>After the call, we'll send you a project timeline and begin work</span>
+              </li>
+            </ul>
+          </div>
+
+          <div className="flex flex-wrap justify-center gap-4">
+            <Link href="/" className="btn-accent inline-flex items-center gap-2">
+              Back to Home
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link href="/contact" className="btn-secondary">
+              Contact Us
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <Footer />
+    </main>
+  )
+}
