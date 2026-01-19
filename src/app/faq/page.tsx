@@ -38,7 +38,7 @@ const faqSchema = {
     },
     {
       '@type': 'Question',
-      name: 'Why is Authority tier cheaper upfront than Starter?',
+      name: 'Why is Authority tier cheaper upfront than Self-Managed?',
       acceptedAnswer: {
         '@type': 'Answer',
         text: 'Because we earn through affiliate revenue instead of a higher setup fee. With Authority, we\'re investing in your site\'s long-term success. We keep the affiliate revenue, which means we\'re motivated to create content that actually ranks and converts.',
@@ -49,7 +49,7 @@ const faqSchema = {
       name: 'How does the affiliate revenue share work?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'When we create content, we integrate relevant affiliate links—products your customers might actually want. With Starter, you keep 100%. With Growth, it\'s 70/30 (LMW/You). With Authority, LMW keeps 100%.',
+        text: 'When we create content, we integrate relevant affiliate links—products your customers might actually want. With Self-Managed, you keep 100%. With Growth, it\'s 70/30 (LMW/You). With Authority, LMW keeps 100%.',
       },
     },
     {
@@ -57,7 +57,7 @@ const faqSchema = {
       name: 'Do I own my website?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'With Starter and Growth tiers, yes—you own 100% of the site. With Authority tier, you have an exclusive license to use the site while we retain ownership. After 12 months, you can purchase full ownership.',
+        text: 'With Self-Managed and Growth tiers, yes—you own 100% of the site. With Authority tier, you have an exclusive license to use the site while we retain ownership. After 12 months, you can purchase full ownership.',
       },
     },
     {
@@ -121,7 +121,7 @@ function Footer() {
           <div>
             <h3 className="font-display font-semibold text-white mb-4">Services</h3>
             <ul className="space-y-3">
-              <li><Link href="/services/starter" className="text-gray-400 hover:text-white transition-colors">Starter Tier</Link></li>
+              <li><Link href="/services/self-managed" className="text-gray-400 hover:text-white transition-colors">Self-Managed</Link></li>
               <li><Link href="/services/growth" className="text-gray-400 hover:text-white transition-colors">Growth Tier</Link></li>
               <li><Link href="/services/authority" className="text-gray-400 hover:text-white transition-colors">Authority Tier</Link></li>
             </ul>
@@ -158,7 +158,7 @@ export default function FAQPage() {
         },
         {
           q: 'Do I need to provide content?',
-          a: 'For Starter tier, yes—you\'ll need to provide your core content (about your business, services, etc.). For Growth and Authority tiers, we create ongoing blog content for you. We can also help with initial content creation at our hourly rate.'
+          a: 'For Self-Managed tier, yes—you\'ll need to provide your core content (about your business, services, etc.). For Growth and Authority tiers, we create ongoing blog content for you. We can also help with initial content creation at our hourly rate.'
         },
         {
           q: 'What if I already have a website?',
@@ -170,12 +170,12 @@ export default function FAQPage() {
       title: 'Pricing Questions',
       faqs: [
         {
-          q: 'Why is Authority tier cheaper upfront than Starter?',
+          q: 'Why is Authority tier cheaper upfront than Self-Managed?',
           a: 'Because we earn through affiliate revenue instead of a higher setup fee. With Authority, we\'re investing in your site\'s long-term success. We keep the affiliate revenue, which means we\'re motivated to create content that actually ranks and converts. You get agency-level service at a fraction of the cost.'
         },
         {
           q: 'How does the affiliate revenue share work?',
-          a: 'When we create content, we integrate relevant affiliate links—products your customers might actually want. If someone clicks and buys, we earn a commission. With Starter, you keep 100%. With Growth, it\'s 70/30 (LMW/You). With Authority, LMW keeps 100% (which is why setup is so low).'
+          a: 'When we create content, we integrate relevant affiliate links—products your customers might actually want. If someone clicks and buys, we earn a commission. With Self-Managed, you keep 100%. With Growth, it\'s 70/30 (LMW/You). With Authority, LMW keeps 100% (which is why setup is so low).'
         },
         {
           q: 'Are there any hidden fees?',
@@ -200,7 +200,7 @@ export default function FAQPage() {
         },
         {
           q: 'Do you handle hosting?',
-          a: 'For Growth and Authority tiers, yes—hosting is included in your monthly fee. For Starter tier, you arrange your own hosting (we recommend Vercel or Netlify and can help you set it up).'
+          a: 'For Growth and Authority tiers, yes—hosting is included in your monthly fee. For Self-Managed tier, you arrange your own hosting (we recommend Vercel or Netlify and can help you set it up).'
         },
         {
           q: 'What about security?',
@@ -213,11 +213,11 @@ export default function FAQPage() {
       faqs: [
         {
           q: 'Do I own my website?',
-          a: 'With Starter and Growth tiers, yes—you own 100% of the site. With Authority tier, you have an exclusive license to use the site while we retain ownership (this is how we keep setup costs so low). After 12 months, you can purchase full ownership.'
+          a: 'With Self-Managed and Growth tiers, yes—you own 100% of the site. With Authority tier, you have an exclusive license to use the site while we retain ownership (this is how we keep setup costs so low). After 12 months, you can purchase full ownership.'
         },
         {
           q: 'What happens if I cancel?',
-          a: 'For Starter, there\'s nothing to cancel—you own everything. For Growth, you keep your site and take over hosting. For Authority, we help you transition—either to a new site or you can purchase ownership of the existing one.'
+          a: 'For Self-Managed, there\'s nothing to cancel—you own everything. For Growth, you keep your site and take over hosting. For Authority, we help you transition—either to a new site or you can purchase ownership of the existing one.'
         },
         {
           q: 'Can I move my site elsewhere?',
@@ -225,7 +225,7 @@ export default function FAQPage() {
         },
         {
           q: 'What about the content you create?',
-          a: 'Content ownership depends on the tier. Starter: you own it. Growth: you own it (we just get affiliate revenue share). Authority: we retain content ownership (it\'s part of how we recoup our investment in creating it).'
+          a: 'Content ownership depends on the tier. Self-Managed: you own it. Growth: you own it (we just get affiliate revenue share). Authority: we retain content ownership (it\'s part of how we recoup our investment in creating it).'
         }
       ]
     }

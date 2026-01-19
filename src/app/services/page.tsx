@@ -31,7 +31,7 @@ import {
 
 export const metadata: Metadata = {
   title: 'Services | LMW Labs - SEO-Ready Website Development',
-  description: 'Professional websites with SEO optimization and built-in affiliate revenue. Choose from Starter, Growth, or Authority tiers. From $500 setup.',
+  description: 'Professional websites with SEO optimization and built-in affiliate revenue. Choose from Self-Managed, Growth, or Authority tiers. From $500 setup.',
 }
 
 function Navigation() {
@@ -119,7 +119,7 @@ function Footer() {
           <div>
             <h3 className="font-display font-semibold text-white mb-4">Services</h3>
             <ul className="space-y-3">
-              <li><Link href="/services/starter" className="text-gray-400 hover:text-white transition-colors">Starter Tier</Link></li>
+              <li><Link href="/services/self-managed" className="text-gray-400 hover:text-white transition-colors">Self-Managed</Link></li>
               <li><Link href="/services/growth" className="text-gray-400 hover:text-white transition-colors">Growth Tier</Link></li>
               <li><Link href="/services/authority" className="text-gray-400 hover:text-white transition-colors">Authority Tier</Link></li>
               <li><Link href="/pricing" className="text-gray-400 hover:text-white transition-colors">Pricing</Link></li>
@@ -344,18 +344,20 @@ export default function ServicesPage() {
   ]
 
   const comparisonFeatures = [
-    { feature: 'Setup Cost', starter: '$2,500-4,000', growth: '$1,500-2,500', authority: '$500-1,000' },
-    { feature: 'Monthly Cost', starter: '$0', growth: '$100', authority: '$150' },
-    { feature: 'Pages Included', starter: '5-8', growth: '5-10', authority: '10-15' },
-    { feature: 'Blog Posts/Month', starter: '0', growth: '1', authority: '4' },
-    { feature: 'Site Ownership', starter: true, growth: true, authority: 'Licensed' },
-    { feature: 'Affiliate Revenue', starter: 'You keep 100%', growth: '70/30 split', authority: 'LMW keeps' },
-    { feature: 'Hosting Included', starter: false, growth: true, authority: true },
-    { feature: 'Support Duration', starter: '30 days', growth: 'Unlimited', authority: 'Priority' },
-    { feature: 'SEO Setup', starter: 'Basic', growth: 'Ongoing', authority: 'Full Service' },
-    { feature: 'Analytics Reports', starter: false, growth: 'Monthly', authority: 'Weekly' },
-    { feature: 'Google Business Mgmt', starter: false, growth: false, authority: true },
-    { feature: 'Local SEO', starter: false, growth: false, authority: true },
+    { feature: 'Setup Cost', selfManaged: '$2,500-4,000', growth: '$1,500-2,500', authority: '$500-1,000' },
+    { feature: 'Monthly Cost', selfManaged: '$0', growth: '$100', authority: '$150' },
+    { feature: 'Pages Included', selfManaged: '5-8', growth: '5-10', authority: '10-15' },
+    { feature: 'Blog Posts/Month', selfManaged: '0', growth: '1', authority: '4' },
+    { feature: 'Site Ownership', selfManaged: true, growth: true, authority: 'Licensed' },
+    { feature: 'Affiliate Revenue', selfManaged: 'You keep 100%', growth: '70/30 split', authority: 'LMW keeps' },
+    { feature: 'Client Dashboard', selfManaged: false, growth: true, authority: true },
+    { feature: 'Project Tracking', selfManaged: false, growth: false, authority: true },
+    { feature: 'Hosting Included', selfManaged: false, growth: true, authority: true },
+    { feature: 'Support Duration', selfManaged: '30 days', growth: 'Unlimited', authority: 'Priority' },
+    { feature: 'SEO Setup', selfManaged: 'Basic', growth: 'Ongoing', authority: 'Full Service' },
+    { feature: 'Analytics Reports', selfManaged: false, growth: 'Monthly', authority: 'Weekly' },
+    { feature: 'Google Business Mgmt', selfManaged: false, growth: false, authority: true },
+    { feature: 'Local SEO', selfManaged: false, growth: false, authority: true },
   ]
 
   return (
@@ -484,9 +486,9 @@ export default function ServicesPage() {
                 <tr>
                   <th className="text-left p-4 text-gray-400 font-normal">Feature</th>
                   <th className="text-center p-4">
-                    <Link href="/services/starter" className="block hover:opacity-80 transition-opacity">
-                      <span className="block text-white font-display font-bold text-lg">Starter</span>
-                      <span className="text-gray-500 text-sm">Self-Maintained</span>
+                    <Link href="/services/self-managed" className="block hover:opacity-80 transition-opacity">
+                      <span className="block text-white font-display font-bold text-lg">Self-Managed</span>
+                      <span className="text-gray-500 text-sm">Full Ownership</span>
                     </Link>
                   </th>
                   <th className="text-center p-4 bg-accent-400/5 rounded-t-xl">
@@ -509,14 +511,14 @@ export default function ServicesPage() {
                   <tr key={index} className="border-t border-primary-800/20">
                     <td className="p-4 text-gray-300">{row.feature}</td>
                     <td className="p-4 text-center">
-                      {typeof row.starter === 'boolean' ? (
-                        row.starter ? (
+                      {typeof row.selfManaged === 'boolean' ? (
+                        row.selfManaged ? (
                           <Check className="w-5 h-5 text-accent-400 mx-auto" />
                         ) : (
                           <X className="w-5 h-5 text-gray-600 mx-auto" />
                         )
                       ) : (
-                        <span className="text-white">{row.starter}</span>
+                        <span className="text-white">{row.selfManaged}</span>
                       )}
                     </td>
                     <td className="p-4 text-center bg-accent-400/5">
@@ -548,7 +550,7 @@ export default function ServicesPage() {
                 <tr className="border-t border-primary-800/20">
                   <td className="p-4"></td>
                   <td className="p-4 text-center">
-                    <Link href="/services/starter" className="btn-secondary text-sm inline-block">
+                    <Link href="/services/self-managed" className="btn-secondary text-sm inline-block">
                       Learn More
                     </Link>
                   </td>

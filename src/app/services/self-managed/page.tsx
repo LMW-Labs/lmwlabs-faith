@@ -16,7 +16,7 @@ import {
 } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Starter Tier | LMW Labs - Full Ownership Website Package',
+  title: 'Self-Managed | LMW Labs - Full Ownership Website Package',
   description: 'Own your website 100%. Custom 5-8 page website with SEO setup, mobile responsive design, and 30-day support. $2,500-$4,000 one-time.',
 }
 
@@ -70,7 +70,7 @@ function Footer() {
           <div>
             <h3 className="font-display font-semibold text-white mb-4">Services</h3>
             <ul className="space-y-3">
-              <li><Link href="/services/starter" className="text-gray-400 hover:text-white transition-colors">Starter Tier</Link></li>
+              <li><Link href="/services/self-managed" className="text-gray-400 hover:text-white transition-colors">Self-Managed</Link></li>
               <li><Link href="/services/growth" className="text-gray-400 hover:text-white transition-colors">Growth Tier</Link></li>
               <li><Link href="/services/authority" className="text-gray-400 hover:text-white transition-colors">Authority Tier</Link></li>
             </ul>
@@ -92,7 +92,7 @@ function Footer() {
   )
 }
 
-export default function StarterTierPage() {
+export default function SelfManagedPage() {
   const included = [
     'Custom 5-8 page website',
     'Mobile responsive design',
@@ -106,6 +106,7 @@ export default function StarterTierPage() {
   ]
 
   const notIncluded = [
+    'Client Dashboard access',
     'Ongoing hosting (you arrange your own)',
     'Monthly blog content creation',
     'Ongoing SEO optimization',
@@ -158,7 +159,7 @@ export default function StarterTierPage() {
             Full Ownership
           </span>
           <h1 className="font-display text-4xl md:text-6xl font-bold text-white mb-6">
-            Starter Tier
+            Self-Managed
           </h1>
           <p className="text-xl text-gray-400 mb-8 max-w-2xl">
             You want full control. You're comfortable updating your own site.

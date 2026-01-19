@@ -73,7 +73,7 @@ function Footer() {
           <div>
             <h3 className="font-display font-semibold text-white mb-4">Services</h3>
             <ul className="space-y-3">
-              <li><Link href="/services/starter" className="text-gray-400 hover:text-white transition-colors">Starter Tier</Link></li>
+              <li><Link href="/services/self-managed" className="text-gray-400 hover:text-white transition-colors">Self-Managed</Link></li>
               <li><Link href="/services/growth" className="text-gray-400 hover:text-white transition-colors">Growth Tier</Link></li>
               <li><Link href="/services/authority" className="text-gray-400 hover:text-white transition-colors">Authority Tier</Link></li>
             </ul>
@@ -99,6 +99,7 @@ export default function AuthorityTierPage() {
   const included = [
     'Everything in Growth tier',
     'Custom 10-15 page website',
+    'Client Dashboard with project tracking',
     '4 SEO blog posts per month',
     'Google Business Profile management',
     'Local SEO optimization',
@@ -155,7 +156,7 @@ export default function AuthorityTierPage() {
     },
     {
       q: 'What if I want to own my site later?',
-      a: 'After 12 months, you can purchase full ownership for the difference between what you paid and our Starter tier price. We want long-term partnerships, not lock-in.'
+      a: 'After 12 months, you can purchase full ownership for the difference between what you paid and our Self-Managed tier price. We want long-term partnerships, not lock-in.'
     },
     {
       q: 'How is this different from renting a website?',

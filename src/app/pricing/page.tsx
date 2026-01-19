@@ -12,7 +12,7 @@ import {
 
 export const metadata: Metadata = {
   title: 'Pricing | LMW Labs - Transparent Website Pricing',
-  description: 'Clear, honest pricing for professional websites. Starter from $2,500, Growth from $1,500, Authority from $500. No hidden fees.',
+  description: 'Clear, honest pricing for professional websites. Self-Managed from $2,500, Growth from $1,500, Authority from $500. No hidden fees.',
 }
 
 function Navigation() {
@@ -65,7 +65,7 @@ function Footer() {
           <div>
             <h3 className="font-display font-semibold text-white mb-4">Services</h3>
             <ul className="space-y-3">
-              <li><Link href="/services/starter" className="text-gray-400 hover:text-white transition-colors">Starter Tier</Link></li>
+              <li><Link href="/services/self-managed" className="text-gray-400 hover:text-white transition-colors">Self-Managed</Link></li>
               <li><Link href="/services/growth" className="text-gray-400 hover:text-white transition-colors">Growth Tier</Link></li>
               <li><Link href="/services/authority" className="text-gray-400 hover:text-white transition-colors">Authority Tier</Link></li>
             </ul>
@@ -90,7 +90,7 @@ function Footer() {
 export default function PricingPage() {
   const tiers = [
     {
-      name: 'Starter',
+      name: 'Self-Managed',
       tagline: 'Full Ownership',
       setup: '$2,500 - $4,000',
       monthly: '$0',
@@ -102,11 +102,12 @@ export default function PricingPage() {
         { text: '30-day support', included: true },
         { text: 'You own 100%', included: true },
         { text: 'You keep 100% affiliate revenue', included: true },
+        { text: 'Client Dashboard access', included: false },
         { text: 'Hosting included', included: false },
         { text: 'Monthly blog posts', included: false },
         { text: 'Ongoing SEO', included: false },
       ],
-      href: '/services/starter',
+      href: '/services/self-managed',
       popular: false
     },
     {
@@ -122,6 +123,7 @@ export default function PricingPage() {
         { text: 'Unlimited support', included: true },
         { text: 'You own the site', included: true },
         { text: '70/30 affiliate split (LMW/You)', included: true },
+        { text: 'Client Dashboard access', included: true },
         { text: 'Hosting included', included: true },
         { text: '1 blog post per month', included: true },
         { text: 'Monthly analytics reports', included: true },
@@ -142,6 +144,7 @@ export default function PricingPage() {
         { text: 'Priority support', included: true },
         { text: 'Exclusive license (buyout available)', included: true },
         { text: 'LMW keeps affiliate revenue', included: true },
+        { text: 'Client Dashboard with project tracking', included: true },
         { text: 'Hosting included', included: true },
         { text: '4 blog posts per month', included: true },
         { text: 'Google Business management', included: true },
