@@ -12,7 +12,12 @@ import {
   RefreshCw,
   Eye,
   LogOut,
-  ShieldAlert
+  ShieldAlert,
+  Send,
+  Copy,
+  Check,
+  Plus,
+  ExternalLink
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 
@@ -65,6 +70,13 @@ export default function AdminDashboard() {
   const [isAuthorized, setIsAuthorized] = useState(false)
   const [userEmail, setUserEmail] = useState('')
   const [authChecking, setAuthChecking] = useState(true)
+
+  // Agreement modal state
+  const [showAgreementModal, setShowAgreementModal] = useState(false)
+  const [agreementClient, setAgreementClient] = useState<Client | null>(null)
+  const [agreementTier, setAgreementTier] = useState('growth')
+  const [agreementAmount, setAgreementAmount] = useState('')
+  const [copiedLink, setCopiedLink] = useState(false)
 
   // Check if user is authorized admin
   useEffect(() => {
@@ -131,6 +143,36 @@ export default function AdminDashboard() {
       style: 'currency',
       currency: 'USD'
     }).format(amount || 0)
+  }
+
+  const generateAgreementLink = (client: Client) => {
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://lmwlabs.faith'
+    const params = new URLSearchParams({
+      business: client.business_name || '',
+      contact: client.contact_name || '',
+      email: client.email || '',
+      phone: client.phone || '',
+      clientId: client.id || '',
+      tier: agreementTier,
+      ...(agreementAmount && { amount: agreementAmount })
+    })
+    return `${baseUrl}/agreement?${params.toString()}`
+  }
+
+  const copyAgreementLink = async () => {
+    if (!agreementClient) return
+    const link = generateAgreementLink(agreementClient)
+    await navigator.clipboard.writeText(link)
+    setCopiedLink(true)
+    setTimeout(() => setCopiedLink(false), 2000)
+  }
+
+  const openSendAgreementModal = (client: Client) => {
+    setAgreementClient(client)
+    setAgreementTier('growth')
+    setAgreementAmount('')
+    setCopiedLink(false)
+    setShowAgreementModal(true)
   }
 
   // Loading state while checking auth
@@ -421,12 +463,22 @@ export default function AdminDashboard() {
                           <td className="px-6 py-4 text-sm text-gray-400">{client.phone || 'N/A'}</td>
                           <td className="px-6 py-4 text-sm text-gray-400">{formatDate(client.created_at)}</td>
                           <td className="px-6 py-4">
-                            <button
-                              onClick={() => setSelectedItem(client)}
-                              className="text-blue-400 hover:text-blue-300"
-                            >
-                              <Eye className="w-4 h-4" />
-                            </button>
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => setSelectedItem(client)}
+                                className="text-blue-400 hover:text-blue-300"
+                                title="View Details"
+                              >
+                                <Eye className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={() => openSendAgreementModal(client)}
+                                className="text-green-400 hover:text-green-300"
+                                title="Send Agreement"
+                              >
+                                <Send className="w-4 h-4" />
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -495,7 +547,7 @@ export default function AdminDashboard() {
                 <h3 className="text-lg font-semibold text-white">Details</h3>
                 <button
                   onClick={() => setSelectedItem(null)}
-                  className="text-gray-400 hover:text-white"
+                  className="text-gray-400 hover:text-white text-2xl"
                 >
                   &times;
                 </button>
@@ -504,6 +556,95 @@ export default function AdminDashboard() {
                 <pre className="text-sm text-gray-300 whitespace-pre-wrap">
                   {JSON.stringify(selectedItem, null, 2)}
                 </pre>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Send Agreement Modal */}
+        {showAgreementModal && agreementClient && (
+          <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-6">
+            <div className="bg-gray-900 rounded-xl border border-gray-800 max-w-lg w-full">
+              <div className="p-6 border-b border-gray-800 flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-white">Send Agreement</h3>
+                <button
+                  onClick={() => setShowAgreementModal(false)}
+                  className="text-gray-400 hover:text-white text-2xl"
+                >
+                  &times;
+                </button>
+              </div>
+              <div className="p-6 space-y-4">
+                <div>
+                  <p className="text-sm text-gray-400 mb-1">Client</p>
+                  <p className="text-white font-medium">{agreementClient.business_name || agreementClient.contact_name}</p>
+                  <p className="text-gray-400 text-sm">{agreementClient.email}</p>
+                </div>
+
+                <div>
+                  <label className="block text-sm text-gray-400 mb-2">Package Tier</label>
+                  <select
+                    value={agreementTier}
+                    onChange={(e) => setAgreementTier(e.target.value)}
+                    className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="self-managed">Self-Managed ($2,500 - $4,000)</option>
+                    <option value="growth">Growth ($1,500 - $2,500)</option>
+                    <option value="authority">Authority ($500 - $1,000)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm text-gray-400 mb-2">Custom Amount (optional)</label>
+                  <input
+                    type="number"
+                    value={agreementAmount}
+                    onChange={(e) => setAgreementAmount(e.target.value)}
+                    placeholder="Leave blank for tier default"
+                    className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+
+                <div className="pt-4 border-t border-gray-800">
+                  <p className="text-sm text-gray-400 mb-2">Agreement Link</p>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      readOnly
+                      value={generateAgreementLink(agreementClient)}
+                      className="flex-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-gray-300 text-sm truncate"
+                    />
+                    <button
+                      onClick={copyAgreementLink}
+                      className={`px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-colors ${
+                        copiedLink
+                          ? 'bg-green-600 text-white'
+                          : 'bg-blue-600 text-white hover:bg-blue-700'
+                      }`}
+                    >
+                      {copiedLink ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                      {copiedLink ? 'Copied!' : 'Copy'}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex gap-3 pt-4">
+                  <a
+                    href={generateAgreementLink(agreementClient)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors text-center flex items-center justify-center gap-2"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    Preview
+                  </a>
+                  <button
+                    onClick={() => setShowAgreementModal(false)}
+                    className="flex-1 px-4 py-2 bg-gray-700 text-white rounded-lg font-medium hover:bg-gray-600 transition-colors"
+                  >
+                    Close
+                  </button>
+                </div>
               </div>
             </div>
           </div>
