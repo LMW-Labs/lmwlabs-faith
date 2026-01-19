@@ -371,21 +371,35 @@ export default function PortalPage() {
               {projects.length > 0 ? (
                 <div className="space-y-4">
                   {projects.map((project) => (
-                    <div key={project.id} className="p-4 bg-gray-800 rounded-lg">
+                    <a
+                      key={project.id}
+                      href={project.domain ? `https://${project.domain.replace(/^https?:\/\//, '')}` : '#'}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`block p-4 bg-gray-800 rounded-lg transition-colors ${project.domain ? 'hover:bg-gray-750 cursor-pointer group' : 'cursor-default'}`}
+                    >
                       <div className="flex items-start justify-between mb-2">
-                        <div>
-                          <p className="text-white font-medium">{project.name}</p>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <p className={`text-white font-medium ${project.domain ? 'group-hover:text-blue-400' : ''} transition-colors`}>{project.name}</p>
+                            {project.domain && (
+                              <ExternalLink className="w-4 h-4 text-gray-500 group-hover:text-blue-400 transition-colors" />
+                            )}
+                          </div>
                           <p className="text-gray-400 text-sm line-clamp-1">{project.description}</p>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 ml-4">
                           {getStatusIcon(project.status)}
                           <span className="text-sm text-gray-300 capitalize">{project.status?.replace('_', ' ') || 'pending'}</span>
                         </div>
                       </div>
+                      {project.domain && (
+                        <p className="text-gray-500 text-xs mb-1">{project.domain}</p>
+                      )}
                       {project.launch_date && (
                         <p className="text-gray-500 text-sm">Launched: {formatDate(project.launch_date)}</p>
                       )}
-                    </div>
+                    </a>
                   ))}
                 </div>
               ) : (

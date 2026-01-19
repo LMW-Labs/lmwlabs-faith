@@ -149,6 +149,7 @@ export default function PortfolioPage() {
       title: 'Global Hoops Network',
       category: 'Web Application',
       description: 'Player prospecting system for a former Harlem Globetrotter. Video uploads, coach submissions, AI-powered skill analysis.',
+      image: '/images/global-hoops-network.jpg',
       tech: ['Next.js', 'Firebase', 'Cloudflare R2', 'OpenAI'],
       results: ['Video Analysis', 'Global Reach', 'Coach Portal'],
       link: 'https://www.globalhoopsnetwork.org/',
@@ -188,13 +189,13 @@ export default function PortfolioPage() {
               >
                 <div className="flex flex-col lg:flex-row">
                   {/* Project Image */}
-                  <div className="lg:w-96 h-56 lg:h-auto relative overflow-hidden">
+                  <div className="lg:w-80 lg:min-w-80 h-48 lg:h-auto relative overflow-hidden bg-primary-950/50 flex items-center justify-center">
                     {project.image ? (
                       <Image
                         src={project.image}
                         alt={project.title}
                         fill
-                        className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                        className="object-contain p-4 group-hover:scale-105 transition-transform duration-500"
                       />
                     ) : (
                       <div className={`w-full h-full bg-gradient-to-br ${project.color} flex items-center justify-center p-8`}>
