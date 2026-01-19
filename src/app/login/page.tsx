@@ -7,6 +7,13 @@ import Image from 'next/image'
 import { Mail, Lock, ArrowRight, AlertCircle } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 
+// Admin emails - must match the list in admin/page.tsx
+const ADMIN_EMAILS = [
+  'admin@lmwlabs.faith',
+  'awyrick@lmwlabs.faith',
+  'info@lmwlabs.faith'
+]
+
 export default function LoginPage() {
   const router = useRouter()
   const [email, setEmail] = useState('')
@@ -21,13 +28,21 @@ export default function LoginPage() {
     setLoading(true)
     setError('')
 
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password
     })
 
     if (error) {
       setError(error.message)
+      setLoading(false)
+      return
+    }
+
+    // Redirect admins to admin dashboard, others to client portal
+    const userEmail = data.user?.email?.toLowerCase() || ''
+    if (ADMIN_EMAILS.includes(userEmail)) {
+      router.push('/admin')
     } else {
       router.push('/portal')
     }
