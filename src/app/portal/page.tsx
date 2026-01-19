@@ -37,7 +37,7 @@ interface Agreement {
   agreement_number: string
   agreement_date: string
   client_business_name: string
-  total_amount: number
+  total_due_at_signing: number
   status: string
   created_at: string
 }
@@ -47,8 +47,8 @@ interface Project {
   name: string
   description: string
   status: string
-  start_date: string
-  due_date: string
+  launch_date: string
+  domain: string
   created_at: string
 }
 
@@ -346,7 +346,7 @@ export default function PortalPage() {
                       </div>
                       <div className="flex items-center justify-between">
                         <p className="text-gray-500 text-sm">{agreement.client_business_name}</p>
-                        <p className="text-white font-semibold">{formatCurrency(agreement.total_amount)}</p>
+                        <p className="text-white font-semibold">{formatCurrency(agreement.total_due_at_signing)}</p>
                       </div>
                     </div>
                   ))}
@@ -382,8 +382,8 @@ export default function PortalPage() {
                           <span className="text-sm text-gray-300 capitalize">{project.status?.replace('_', ' ') || 'pending'}</span>
                         </div>
                       </div>
-                      {project.due_date && (
-                        <p className="text-gray-500 text-sm">Due: {formatDate(project.due_date)}</p>
+                      {project.launch_date && (
+                        <p className="text-gray-500 text-sm">Launched: {formatDate(project.launch_date)}</p>
                       )}
                     </div>
                   ))}
