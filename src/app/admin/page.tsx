@@ -80,6 +80,13 @@ export default function AdminDashboard() {
   const [agreementDescription, setAgreementDescription] = useState('')
   const [agreementProjectUrl, setAgreementProjectUrl] = useState('')
   const [copiedLink, setCopiedLink] = useState(false)
+  const [sendingEmail, setSendingEmail] = useState(false)
+  const [emailSent, setEmailSent] = useState(false)
+  const [emailError, setEmailError] = useState('')
+
+  // New agreement modal (without pre-selected client)
+  const [showNewAgreementModal, setShowNewAgreementModal] = useState(false)
+  const [selectedClientId, setSelectedClientId] = useState('')
 
   // Check if user is authorized admin
   useEffect(() => {
@@ -181,7 +188,66 @@ export default function AdminDashboard() {
     setAgreementDescription('')
     setAgreementProjectUrl('')
     setCopiedLink(false)
+    setEmailSent(false)
+    setEmailError('')
     setShowAgreementModal(true)
+  }
+
+  const openNewAgreementModal = () => {
+    setSelectedClientId('')
+    setAgreementClient(null)
+    setAgreementTier('growth')
+    setAgreementAmount('')
+    setAgreementMode('quote')
+    setAgreementDescription('')
+    setAgreementProjectUrl('')
+    setCopiedLink(false)
+    setEmailSent(false)
+    setEmailError('')
+    setShowNewAgreementModal(true)
+  }
+
+  const handleClientSelect = (clientId: string) => {
+    setSelectedClientId(clientId)
+    const client = clients.find(c => c.id === clientId)
+    setAgreementClient(client || null)
+  }
+
+  const sendAgreementEmail = async () => {
+    if (!agreementClient) return
+
+    setSendingEmail(true)
+    setEmailError('')
+    setEmailSent(false)
+
+    try {
+      const link = generateAgreementLink(agreementClient)
+      const response = await fetch('/api/send-agreement', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          clientEmail: agreementClient.email,
+          clientName: agreementClient.contact_name || agreementClient.business_name,
+          businessName: agreementClient.business_name,
+          agreementLink: link,
+          mode: agreementMode,
+          tier: agreementTier,
+          amount: agreementAmount || undefined
+        })
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to send email')
+      }
+
+      setEmailSent(true)
+    } catch (error: any) {
+      setEmailError(error.message || 'Failed to send email')
+    } finally {
+      setSendingEmail(false)
+    }
   }
 
   // Loading state while checking auth
@@ -317,20 +383,29 @@ export default function AdminDashboard() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-2 mb-6">
-          {(['overview', 'agreements', 'clients', 'contacts'] as const).map((tab) => (
-            <button
-              key={tab}
-              onClick={() => { setActiveTab(tab); setSelectedItem(null); }}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                activeTab === tab
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white'
-              }`}
-            >
-              {tab.charAt(0).toUpperCase() + tab.slice(1)}
-            </button>
-          ))}
+        <div className="flex gap-2 mb-6 flex-wrap items-center justify-between">
+          <div className="flex gap-2">
+            {(['overview', 'agreements', 'clients', 'contacts'] as const).map((tab) => (
+              <button
+                key={tab}
+                onClick={() => { setActiveTab(tab); setSelectedItem(null); }}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                  activeTab === tab
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white'
+                }`}
+              >
+                {tab.charAt(0).toUpperCase() + tab.slice(1)}
+              </button>
+            ))}
+          </div>
+          <button
+            onClick={openNewAgreementModal}
+            className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+            New Quote/Agreement
+          </button>
         </div>
 
         {/* Content */}
@@ -696,23 +771,278 @@ export default function AdminDashboard() {
                   </div>
                 </div>
 
+                {/* Email Status */}
+                {emailSent && (
+                  <div className="p-3 bg-green-600/20 border border-green-500/30 rounded-lg">
+                    <p className="text-green-400 text-sm font-medium flex items-center gap-2">
+                      <Check className="w-4 h-4" />
+                      Email sent successfully to {agreementClient.email}
+                    </p>
+                  </div>
+                )}
+
+                {emailError && (
+                  <div className="p-3 bg-red-600/20 border border-red-500/30 rounded-lg">
+                    <p className="text-red-400 text-sm">{emailError}</p>
+                  </div>
+                )}
+
                 <div className="flex gap-3 pt-4">
+                  <button
+                    onClick={sendAgreementEmail}
+                    disabled={sendingEmail || emailSent}
+                    className={`flex-1 px-4 py-2 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors ${
+                      emailSent
+                        ? 'bg-green-600/50 text-green-200 cursor-not-allowed'
+                        : sendingEmail
+                          ? 'bg-blue-600/50 text-blue-200 cursor-wait'
+                          : 'bg-blue-600 text-white hover:bg-blue-700'
+                    }`}
+                  >
+                    {sendingEmail ? (
+                      <>
+                        <RefreshCw className="w-4 h-4 animate-spin" />
+                        Sending...
+                      </>
+                    ) : emailSent ? (
+                      <>
+                        <Check className="w-4 h-4" />
+                        Sent!
+                      </>
+                    ) : (
+                      <>
+                        <Mail className="w-4 h-4" />
+                        Send Email
+                      </>
+                    )}
+                  </button>
                   <a
                     href={generateAgreementLink(agreementClient)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors text-center flex items-center justify-center gap-2"
+                    className="px-4 py-2 bg-gray-700 text-white rounded-lg font-medium hover:bg-gray-600 transition-colors text-center flex items-center justify-center gap-2"
                   >
                     <ExternalLink className="w-4 h-4" />
                     Preview
                   </a>
-                  <button
-                    onClick={() => setShowAgreementModal(false)}
-                    className="flex-1 px-4 py-2 bg-gray-700 text-white rounded-lg font-medium hover:bg-gray-600 transition-colors"
-                  >
-                    Close
-                  </button>
                 </div>
+                <button
+                  onClick={() => setShowAgreementModal(false)}
+                  className="w-full px-4 py-2 bg-gray-800 text-gray-300 rounded-lg font-medium hover:bg-gray-700 hover:text-white transition-colors"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* New Agreement Modal (with client selection) */}
+        {showNewAgreementModal && (
+          <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-6">
+            <div className="bg-gray-900 rounded-xl border border-gray-800 max-w-lg w-full">
+              <div className="p-6 border-b border-gray-800 flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-white">Create New Quote/Agreement</h3>
+                <button
+                  onClick={() => setShowNewAgreementModal(false)}
+                  className="text-gray-400 hover:text-white text-2xl"
+                >
+                  &times;
+                </button>
+              </div>
+              <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+                {/* Client Selection */}
+                <div>
+                  <label className="block text-sm text-gray-400 mb-2">Select Client *</label>
+                  <select
+                    value={selectedClientId}
+                    onChange={(e) => handleClientSelect(e.target.value)}
+                    className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">-- Select a client --</option>
+                    {clients.map((client) => (
+                      <option key={client.id} value={client.id}>
+                        {client.business_name || client.contact_name} - {client.email}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {agreementClient && (
+                  <>
+                    <div className="p-3 bg-gray-800 rounded-lg">
+                      <p className="text-white font-medium">{agreementClient.business_name || agreementClient.contact_name}</p>
+                      <p className="text-gray-400 text-sm">{agreementClient.email}</p>
+                      {agreementClient.phone && <p className="text-gray-500 text-sm">{agreementClient.phone}</p>}
+                    </div>
+
+                    {/* Document Type */}
+                    <div>
+                      <label className="block text-sm text-gray-400 mb-2">Document Type</label>
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setAgreementMode('quote')}
+                          className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors ${
+                            agreementMode === 'quote'
+                              ? 'bg-amber-500 text-white'
+                              : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                          }`}
+                        >
+                          Quote
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setAgreementMode('agreement')}
+                          className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors ${
+                            agreementMode === 'agreement'
+                              ? 'bg-green-600 text-white'
+                              : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                          }`}
+                        >
+                          Agreement
+                        </button>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm text-gray-400 mb-2">Package Tier</label>
+                      <select
+                        value={agreementTier}
+                        onChange={(e) => setAgreementTier(e.target.value)}
+                        className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value="self-managed">Self-Managed ($2,500 - $4,000)</option>
+                        <option value="growth">Growth ($1,500 - $2,500)</option>
+                        <option value="authority">Authority ($500 - $1,000)</option>
+                        <option value="custom">Custom Build</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm text-gray-400 mb-2">
+                        {agreementTier === 'custom' ? 'Custom Amount *' : 'Custom Amount (optional)'}
+                      </label>
+                      <input
+                        type="number"
+                        value={agreementAmount}
+                        onChange={(e) => setAgreementAmount(e.target.value)}
+                        placeholder={agreementTier === 'custom' ? 'Enter amount' : 'Leave blank for tier default'}
+                        className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm text-gray-400 mb-2">Project URL (optional)</label>
+                      <input
+                        type="url"
+                        value={agreementProjectUrl}
+                        onChange={(e) => setAgreementProjectUrl(e.target.value)}
+                        placeholder="e.g., https://clientwebsite.com"
+                        className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm text-gray-400 mb-2">Project Description (optional)</label>
+                      <textarea
+                        value={agreementDescription}
+                        onChange={(e) => setAgreementDescription(e.target.value)}
+                        placeholder="Brief description of services..."
+                        rows={2}
+                        className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500 resize-none"
+                      />
+                    </div>
+
+                    <div className="pt-4 border-t border-gray-800">
+                      <p className="text-sm text-gray-400 mb-2">
+                        {agreementMode === 'quote' ? 'Quote' : 'Agreement'} Link
+                      </p>
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          readOnly
+                          value={generateAgreementLink(agreementClient)}
+                          className="flex-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-gray-300 text-sm truncate"
+                        />
+                        <button
+                          onClick={copyAgreementLink}
+                          className={`px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-colors ${
+                            copiedLink
+                              ? 'bg-green-600 text-white'
+                              : 'bg-blue-600 text-white hover:bg-blue-700'
+                          }`}
+                        >
+                          {copiedLink ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                          {copiedLink ? 'Copied!' : 'Copy'}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Email Status */}
+                    {emailSent && (
+                      <div className="p-3 bg-green-600/20 border border-green-500/30 rounded-lg">
+                        <p className="text-green-400 text-sm font-medium flex items-center gap-2">
+                          <Check className="w-4 h-4" />
+                          Email sent successfully to {agreementClient.email}
+                        </p>
+                      </div>
+                    )}
+
+                    {emailError && (
+                      <div className="p-3 bg-red-600/20 border border-red-500/30 rounded-lg">
+                        <p className="text-red-400 text-sm">{emailError}</p>
+                      </div>
+                    )}
+
+                    <div className="flex gap-3 pt-4">
+                      <button
+                        onClick={sendAgreementEmail}
+                        disabled={sendingEmail || emailSent}
+                        className={`flex-1 px-4 py-2 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors ${
+                          emailSent
+                            ? 'bg-green-600/50 text-green-200 cursor-not-allowed'
+                            : sendingEmail
+                              ? 'bg-blue-600/50 text-blue-200 cursor-wait'
+                              : 'bg-blue-600 text-white hover:bg-blue-700'
+                        }`}
+                      >
+                        {sendingEmail ? (
+                          <>
+                            <RefreshCw className="w-4 h-4 animate-spin" />
+                            Sending...
+                          </>
+                        ) : emailSent ? (
+                          <>
+                            <Check className="w-4 h-4" />
+                            Sent!
+                          </>
+                        ) : (
+                          <>
+                            <Mail className="w-4 h-4" />
+                            Send Email
+                          </>
+                        )}
+                      </button>
+                      <a
+                        href={generateAgreementLink(agreementClient)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-4 py-2 bg-gray-700 text-white rounded-lg font-medium hover:bg-gray-600 transition-colors text-center flex items-center justify-center gap-2"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                        Preview
+                      </a>
+                    </div>
+                  </>
+                )}
+
+                <button
+                  onClick={() => setShowNewAgreementModal(false)}
+                  className="w-full px-4 py-2 bg-gray-800 text-gray-300 rounded-lg font-medium hover:bg-gray-700 hover:text-white transition-colors"
+                >
+                  Close
+                </button>
               </div>
             </div>
           </div>
