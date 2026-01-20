@@ -182,8 +182,12 @@ https://lmwlabs.faith
 info@lmwlabs.faith
     `
 
+    // Use Resend test domain until custom domain DNS is verified
+    // Change back to 'LMW Labs <noreply@lmwlabs.faith>' once DNS propagates
+    const fromEmail = process.env.RESEND_FROM_EMAIL || 'LMW Labs <onboarding@resend.dev>'
+
     const { data, error } = await resend.emails.send({
-      from: 'LMW Labs <noreply@lmwlabs.faith>',
+      from: fromEmail,
       to: [clientEmail],
       subject: subject,
       html: htmlContent,

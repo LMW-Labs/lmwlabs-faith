@@ -83,6 +83,8 @@ export default function AdminDashboard() {
   const [sendingEmail, setSendingEmail] = useState(false)
   const [emailSent, setEmailSent] = useState(false)
   const [emailError, setEmailError] = useState('')
+  const [shortLink, setShortLink] = useState('')
+  const [shorteningLink, setShorteningLink] = useState(false)
 
   // New agreement modal (without pre-selected client)
   const [showNewAgreementModal, setShowNewAgreementModal] = useState(false)
@@ -156,7 +158,8 @@ export default function AdminDashboard() {
   }
 
   const generateAgreementLink = (client: Client) => {
-    const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://lmwlabs.faith'
+    // Always use production URL for links sent to clients
+    const baseUrl = 'https://lmwlabs.faith'
     const params = new URLSearchParams({
       business: client.business_name || '',
       contact: client.contact_name || '',
@@ -172,11 +175,28 @@ export default function AdminDashboard() {
     return `${baseUrl}/agreement?${params.toString()}`
   }
 
+  const shortenUrl = async (longUrl: string): Promise<string> => {
+    try {
+      const response = await fetch(`https://is.gd/create.php?format=json&url=${encodeURIComponent(longUrl)}`)
+      const data = await response.json()
+      if (data.shorturl) {
+        return data.shorturl
+      }
+      return longUrl // fallback to original if shortening fails
+    } catch {
+      return longUrl // fallback to original if shortening fails
+    }
+  }
+
   const copyAgreementLink = async () => {
     if (!agreementClient) return
+    setShorteningLink(true)
     const link = generateAgreementLink(agreementClient)
-    await navigator.clipboard.writeText(link)
+    const shortened = await shortenUrl(link)
+    setShortLink(shortened)
+    await navigator.clipboard.writeText(shortened)
     setCopiedLink(true)
+    setShorteningLink(false)
     setTimeout(() => setCopiedLink(false), 2000)
   }
 
@@ -188,6 +208,7 @@ export default function AdminDashboard() {
     setAgreementDescription('')
     setAgreementProjectUrl('')
     setCopiedLink(false)
+    setShortLink('')
     setEmailSent(false)
     setEmailError('')
     setShowAgreementModal(true)
@@ -202,6 +223,7 @@ export default function AdminDashboard() {
     setAgreementDescription('')
     setAgreementProjectUrl('')
     setCopiedLink(false)
+    setShortLink('')
     setEmailSent(false)
     setEmailError('')
     setShowNewAgreementModal(true)
@@ -221,7 +243,10 @@ export default function AdminDashboard() {
     setEmailSent(false)
 
     try {
-      const link = generateAgreementLink(agreementClient)
+      const longLink = generateAgreementLink(agreementClient)
+      // Shorten the link before sending email
+      const link = await shortenUrl(longLink)
+      setShortLink(link)
       const response = await fetch('/api/send-agreement', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -754,21 +779,33 @@ export default function AdminDashboard() {
                     <input
                       type="text"
                       readOnly
-                      value={generateAgreementLink(agreementClient)}
-                      className="flex-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-gray-300 text-sm truncate"
+                      value={shortLink || generateAgreementLink(agreementClient)}
+                      className={`flex-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm truncate ${shortLink ? 'text-green-400' : 'text-gray-300'}`}
                     />
                     <button
                       onClick={copyAgreementLink}
+                      disabled={shorteningLink}
                       className={`px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-colors ${
                         copiedLink
                           ? 'bg-green-600 text-white'
-                          : 'bg-blue-600 text-white hover:bg-blue-700'
+                          : shorteningLink
+                            ? 'bg-blue-600/50 text-blue-200 cursor-wait'
+                            : 'bg-blue-600 text-white hover:bg-blue-700'
                       }`}
                     >
-                      {copiedLink ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                      {copiedLink ? 'Copied!' : 'Copy'}
+                      {shorteningLink ? (
+                        <RefreshCw className="w-4 h-4 animate-spin" />
+                      ) : copiedLink ? (
+                        <Check className="w-4 h-4" />
+                      ) : (
+                        <Copy className="w-4 h-4" />
+                      )}
+                      {shorteningLink ? 'Shortening...' : copiedLink ? 'Copied!' : 'Shorten & Copy'}
                     </button>
                   </div>
+                  {shortLink && (
+                    <p className="text-xs text-green-400 mt-1">Shortened link ready to share!</p>
+                  )}
                 </div>
 
                 {/* Email Status */}
@@ -962,21 +999,33 @@ export default function AdminDashboard() {
                         <input
                           type="text"
                           readOnly
-                          value={generateAgreementLink(agreementClient)}
-                          className="flex-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-gray-300 text-sm truncate"
+                          value={shortLink || generateAgreementLink(agreementClient)}
+                          className={`flex-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm truncate ${shortLink ? 'text-green-400' : 'text-gray-300'}`}
                         />
                         <button
                           onClick={copyAgreementLink}
+                          disabled={shorteningLink}
                           className={`px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-colors ${
                             copiedLink
                               ? 'bg-green-600 text-white'
-                              : 'bg-blue-600 text-white hover:bg-blue-700'
+                              : shorteningLink
+                                ? 'bg-blue-600/50 text-blue-200 cursor-wait'
+                                : 'bg-blue-600 text-white hover:bg-blue-700'
                           }`}
                         >
-                          {copiedLink ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                          {copiedLink ? 'Copied!' : 'Copy'}
+                          {shorteningLink ? (
+                            <RefreshCw className="w-4 h-4 animate-spin" />
+                          ) : copiedLink ? (
+                            <Check className="w-4 h-4" />
+                          ) : (
+                            <Copy className="w-4 h-4" />
+                          )}
+                          {shorteningLink ? 'Shortening...' : copiedLink ? 'Copied!' : 'Shorten & Copy'}
                         </button>
                       </div>
+                      {shortLink && (
+                        <p className="text-xs text-green-400 mt-1">Shortened link ready to share!</p>
+                      )}
                     </div>
 
                     {/* Email Status */}
