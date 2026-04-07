@@ -1,7 +1,8 @@
-import { ImageResponse } from 'next/og'
+import { ImageResponse }              from 'next/og'
+import { OgCard, OgText, OgSize, loadOgLogo, OG_SIZE } from '@/lib/og-layout'
 
-export const runtime = 'nodejs'
-export const size = { width: 1200, height: 630 }
+export const runtime     = 'nodejs'
+export const size        = OG_SIZE
 export const contentType = 'image/png'
 
 async function fetchVerse(decoded: string): Promise<string | null> {
@@ -27,88 +28,29 @@ async function fetchVerse(decoded: string): Promise<string | null> {
   }
 }
 
-async function loadLogo(): Promise<ArrayBuffer | null> {
-  try {
-    const base = process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
-      : 'http://localhost:3000'
-    const res = await fetch(`${base}/images/omega.png`)
-    if (!res.ok) return null
-    return res.arrayBuffer()
-  } catch {
-    return null
-  }
-}
-
 export default async function Image({ params }: { params: Promise<{ ref: string }> }) {
-  const { ref } = await params
-  const decoded = decodeURIComponent(ref)
-  const [verseText, logoData] = await Promise.all([fetchVerse(decoded), loadLogo()])
-  const display = verseText ?? decoded
-  const isLong = display.length > 300
-  const fontSize = isLong ? 22 : 28
+  const { ref }                  = await params
+  const decoded                  = decodeURIComponent(ref)
+  const [verseText, logoData]    = await Promise.all([fetchVerse(decoded), loadOgLogo()])
+  const display                  = verseText ?? decoded
+  const fontSize                 = display.length > 300 ? 22 : 28
 
   return new ImageResponse(
     (
-      <div
-        style={{
-          width: '100%',
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          background: '#0D1117',
-          position: 'relative',
-        }}
-      >
-        {/* Background gradients */}
-        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at 85% 85%, rgba(201,168,76,0.18) 0%, transparent 55%)', display: 'flex' }} />
-        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at 10% 5%, rgba(45,27,105,0.35) 0%, transparent 50%)', display: 'flex' }} />
-        <div style={{ position: 'absolute', inset: 10, border: '2px solid rgba(201,168,76,0.5)', borderRadius: 20, display: 'flex' }} />
+      <OgCard logoData={logoData}>
+        {/* Opening quote mark */}
+        <div style={{ position: 'absolute', top: 20, left: 55, fontSize: 80, color: 'rgba(201,168,76,0.3)', lineHeight: 1, display: 'flex' }}>"</div>
 
-        {/* Centered content */}
-        <div
-          style={{
-            flex: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '50px 90px 20px',
-            position: 'relative',
-          }}
-        >
-          <div style={{ position: 'absolute', top: 20, left: 55, fontSize: 80, color: 'rgba(201,168,76,0.3)', lineHeight: 1, display: 'flex' }}>"</div>
-
-          <div style={{ display: 'flex', flexWrap: 'wrap', maxWidth: 960, color: '#ffffff', fontSize: fontSize, textAlign: 'center', lineHeight: 1.65, wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+          <OgText fontSize={fontSize} style={{ textAlign: 'center', justifyContent: 'center' }}>
             {display}
-          </div>
+          </OgText>
 
           <div style={{ display: 'flex', color: '#C9A84C', fontSize: 22, fontStyle: 'italic', marginTop: 24 }}>
             — {decoded}
           </div>
         </div>
-
-        {/* Bottom bar */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            background: 'rgba(201,168,76,0.12)',
-            padding: '16px 70px',
-            borderTop: '1px solid rgba(201,168,76,0.2)',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            {logoData && (
-              // @ts-expect-error – ImageResponse accepts ArrayBuffer src
-              <img src={logoData} width={32} height={32} style={{ objectFit: 'contain' }} />
-            )}
-            <span style={{ display: 'flex', color: '#C9A84C', fontWeight: 700, fontSize: 22 }}>FaithFeed</span>
-          </div>
-          <span style={{ display: 'flex', color: 'rgba(255,255,255,0.4)', fontSize: 16 }}>lmwlabs.faith</span>
-        </div>
-      </div>
+      </OgCard>
     ),
     { ...size }
   )
