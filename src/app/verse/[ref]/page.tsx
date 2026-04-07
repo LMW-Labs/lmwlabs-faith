@@ -12,7 +12,7 @@ async function fetchVerse(encodedRef: string) {
   const [, book, chapter, verse] = parts
   const { data } = await getFaithfeedSupabase()
     .from('bible_verses')
-    .select('text, book_name, chapter, verse')
+    .select('text, book_name, chapter_number, verse_number')
     .eq('book_name', book)
     .eq('chapter_number', parseInt(chapter))
     .eq('verse_number', parseInt(verse))
