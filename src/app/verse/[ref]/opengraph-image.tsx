@@ -17,7 +17,6 @@ async function fetchVerse(decoded: string): Promise<string | null> {
     const url = `${supabaseUrl}/rest/v1/bible_verses?book_name=eq.${encodeURIComponent(book)}&chapter=eq.${chapter}&verse=eq.${verse}&select=text&limit=1`
     const res = await fetch(url, {
       headers: { apikey: supabaseKey, Authorization: `Bearer ${supabaseKey}` },
-      next: { revalidate: 3600 },
     })
     if (!res.ok) return null
     const rows = await res.json()
@@ -45,7 +44,7 @@ export default async function Image({ params }: { params: Promise<{ ref: string 
   const decoded = decodeURIComponent(ref)
   const [verseText, logoData] = await Promise.all([fetchVerse(decoded), loadLogo()])
   const display = verseText
-    ? verseText.slice(0, 220) + (verseText.length > 220 ? '…' : '')
+    ? verseText.slice(0, 280) + (verseText.length > 280 ? '…' : '')
     : decoded
 
   return new ImageResponse(
@@ -56,36 +55,57 @@ export default async function Image({ params }: { params: Promise<{ ref: string 
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
           background: '#0D1117',
-          padding: '70px',
           position: 'relative',
         }}
       >
+        {/* Background gradients */}
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at 85% 85%, rgba(201,168,76,0.18) 0%, transparent 55%)', display: 'flex' }} />
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at 10% 5%, rgba(45,27,105,0.35) 0%, transparent 50%)', display: 'flex' }} />
         <div style={{ position: 'absolute', inset: 10, border: '2px solid rgba(201,168,76,0.5)', borderRadius: 20, display: 'flex' }} />
 
-        <div style={{ position: 'absolute', top: 80, left: 80, fontSize: 120, color: 'rgba(201,168,76,0.4)', lineHeight: 1, display: 'flex' }}>"</div>
+        {/* Centered content */}
+        <div
+          style={{
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '50px 90px 20px',
+            position: 'relative',
+          }}
+        >
+          <div style={{ position: 'absolute', top: 20, left: 55, fontSize: 80, color: 'rgba(201,168,76,0.3)', lineHeight: 1, display: 'flex' }}>"</div>
 
-        <div style={{ color: '#fff', fontSize: 42, textAlign: 'center', lineHeight: 1.6, maxWidth: 960, position: 'relative', zIndex: 1 }}>
-          {display}
+          <div style={{ display: 'flex', color: '#ffffff', fontSize: 28, textAlign: 'center', lineHeight: 1.65, maxWidth: 960 }}>
+            {display}
+          </div>
+
+          <div style={{ display: 'flex', color: '#C9A84C', fontSize: 22, fontStyle: 'italic', marginTop: 24 }}>
+            — {decoded}
+          </div>
         </div>
 
-        <div style={{ color: '#C9A84C', fontSize: 32, fontStyle: 'italic', marginTop: 40, position: 'relative', zIndex: 1 }}>
-          — {decoded}
-        </div>
-
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', background: 'rgba(201,168,76,0.1)', position: 'absolute', bottom: 0, left: 0, right: 0, padding: '20px 70px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+        {/* Bottom bar */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            background: 'rgba(201,168,76,0.12)',
+            padding: '16px 70px',
+            borderTop: '1px solid rgba(201,168,76,0.2)',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             {logoData && (
               // @ts-expect-error – ImageResponse accepts ArrayBuffer src
-              <img src={logoData} width={40} height={40} style={{ objectFit: 'contain' }} />
+              <img src={logoData} width={32} height={32} style={{ objectFit: 'contain' }} />
             )}
-            <span style={{ color: '#C9A84C', fontWeight: 700, fontSize: 26 }}>FaithFeed</span>
+            <span style={{ display: 'flex', color: '#C9A84C', fontWeight: 700, fontSize: 22 }}>FaithFeed</span>
           </div>
-          <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: 18 }}>lmwlabs.faith</span>
+          <span style={{ display: 'flex', color: 'rgba(255,255,255,0.4)', fontSize: 16 }}>lmwlabs.faith</span>
         </div>
       </div>
     ),
