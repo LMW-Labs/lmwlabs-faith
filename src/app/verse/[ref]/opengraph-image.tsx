@@ -43,9 +43,9 @@ export default async function Image({ params }: { params: Promise<{ ref: string 
   const { ref } = await params
   const decoded = decodeURIComponent(ref)
   const [verseText, logoData] = await Promise.all([fetchVerse(decoded), loadLogo()])
-  const display = verseText
-    ? verseText.slice(0, 280) + (verseText.length > 280 ? '…' : '')
-    : decoded
+  const display = verseText ?? decoded
+  const isLong = display.length > 300
+  const fontSize = isLong ? 22 : 28
 
   return new ImageResponse(
     (
@@ -78,7 +78,7 @@ export default async function Image({ params }: { params: Promise<{ ref: string 
         >
           <div style={{ position: 'absolute', top: 20, left: 55, fontSize: 80, color: 'rgba(201,168,76,0.3)', lineHeight: 1, display: 'flex' }}>"</div>
 
-          <div style={{ display: 'flex', color: '#ffffff', fontSize: 28, textAlign: 'center', lineHeight: 1.65, maxWidth: 960 }}>
+          <div style={{ display: 'flex', color: '#ffffff', fontSize: fontSize, textAlign: 'center', lineHeight: 1.65, maxWidth: 960 }}>
             {display}
           </div>
 

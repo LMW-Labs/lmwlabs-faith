@@ -7,14 +7,21 @@ type Props = { params: Promise<{ id: string }> }
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params
 
-  const { data: post } = await getFaithfeedSupabase()
-    .from('posts')
-    .select('content, author:profiles(full_name)')
-    .eq('id', id)
-    .single()
+  const sb = getFaithfeedSupabase()
+  const { data: post } = await sb.from('posts').select('content, user_id').eq('id', id).single()
+
+  let authorName = 'FaithFeed'
+  if (post?.user_id) {
+    const { data: profile } = await sb
+      .from('profiles')
+      .select('full_name')
+      .eq('id', post.user_id)
+      .single()
+    authorName = profile?.full_name ?? 'FaithFeed'
+  }
 
   const content = post?.content?.slice(0, 200) ?? 'A post on FaithFeed'
-  const author = (post?.author as { full_name?: string } | null)?.full_name ?? 'FaithFeed'
+  const author = authorName
   const title = `${author} on FaithFeed`
 
   return {

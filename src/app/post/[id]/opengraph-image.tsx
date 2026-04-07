@@ -10,15 +10,30 @@ async function fetchPost(id: string): Promise<{ content: string; author: string 
     const supabaseKey = process.env.FAITHFEED_SUPABASE_ANON_KEY
     if (!supabaseUrl || !supabaseKey) return null
 
-    const url = `${supabaseUrl}/rest/v1/posts?id=eq.${id}&select=content,author:profiles(full_name)&limit=1`
-    const res = await fetch(url, {
-      headers: { apikey: supabaseKey, Authorization: `Bearer ${supabaseKey}` },
-    })
-    if (!res.ok) return null
-    const rows = await res.json()
-    const row = rows?.[0]
-    if (!row) return null
-    return { content: row.content ?? '', author: row.author?.full_name ?? 'FaithFeed' }
+    const headers = { apikey: supabaseKey, Authorization: `Bearer ${supabaseKey}` }
+
+    const postRes = await fetch(
+      `${supabaseUrl}/rest/v1/posts?id=eq.${id}&select=content,user_id&limit=1`,
+      { headers }
+    )
+    if (!postRes.ok) return null
+    const posts = await postRes.json()
+    const post = posts?.[0]
+    if (!post) return null
+
+    let authorName = 'FaithFeed'
+    if (post.user_id) {
+      const profileRes = await fetch(
+        `${supabaseUrl}/rest/v1/profiles?id=eq.${post.user_id}&select=full_name&limit=1`,
+        { headers }
+      )
+      if (profileRes.ok) {
+        const profiles = await profileRes.json()
+        authorName = profiles?.[0]?.full_name ?? 'FaithFeed'
+      }
+    }
+
+    return { content: post.content ?? '', author: authorName }
   } catch {
     return null
   }
