@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import { faithfeedSupabase } from '@/lib/faithfeed-supabase'
+import { getFaithfeedSupabase } from '@/lib/faithfeed-supabase'
 import AppRedirect from '@/components/AppRedirect'
 
 type Props = { params: Promise<{ ref: string }> }
@@ -10,7 +10,7 @@ async function fetchVerse(encodedRef: string) {
   if (!parts) return null
 
   const [, book, chapter, verse] = parts
-  const { data } = await faithfeedSupabase
+  const { data } = await getFaithfeedSupabase()
     .from('bible_verses')
     .select('text, book_name, chapter, verse')
     .eq('book_name', book)

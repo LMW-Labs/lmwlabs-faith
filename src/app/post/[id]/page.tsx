@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import { faithfeedSupabase } from '@/lib/faithfeed-supabase'
+import { getFaithfeedSupabase } from '@/lib/faithfeed-supabase'
 import AppRedirect from '@/components/AppRedirect'
 
 type Props = { params: Promise<{ id: string }> }
@@ -7,7 +7,7 @@ type Props = { params: Promise<{ id: string }> }
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params
 
-  const { data: post } = await faithfeedSupabase
+  const { data: post } = await getFaithfeedSupabase()
     .from('posts')
     .select('content, author:profiles(full_name)')
     .eq('id', id)
