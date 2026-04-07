@@ -79,7 +79,7 @@ export default async function Image({ params }: { params: Promise<{ ref: string 
         >
           <div style={{ position: 'absolute', top: 20, left: 55, fontSize: 80, color: 'rgba(201,168,76,0.3)', lineHeight: 1, display: 'flex' }}>"</div>
 
-          <div style={{ display: 'flex', flexWrap: 'wrap', width: '100%', maxWidth: 960, color: '#ffffff', fontSize: fontSize, textAlign: 'center', lineHeight: 1.65 }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', maxWidth: 960, color: '#ffffff', fontSize: fontSize, textAlign: 'center', lineHeight: 1.65, wordBreak: 'break-word', overflowWrap: 'break-word' }}>
             {display}
           </div>
 
