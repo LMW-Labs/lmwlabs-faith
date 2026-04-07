@@ -97,7 +97,7 @@ export default async function Image({ params }: { params: Promise<{ id: string }
 
           <div style={{ height: 1, background: 'rgba(255,255,255,0.1)', marginBottom: 28, display: 'flex' }} />
 
-          <div style={{ display: 'flex', color: 'rgba(255,255,255,0.88)', fontSize: 28, lineHeight: 1.6 }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', width: '100%', color: 'rgba(255,255,255,0.88)', fontSize: 28, lineHeight: 1.6 }}>
             {display}
           </div>
         </div>
