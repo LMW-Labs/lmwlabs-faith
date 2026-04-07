@@ -42,7 +42,8 @@ export default function AppRedirect({ deepLink }: Props) {
       }}
     >
       {/* Logo / brand */}
-      <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>✝</div>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/images/omega.png" alt="FaithFeed" style={{ width: 80, height: 80, objectFit: 'contain', marginBottom: '0.5rem' }} />
       <h1 style={{ color: '#C9A84C', fontSize: '2rem', margin: '0 0 0.5rem' }}>FaithFeed</h1>
       <p style={{ color: '#aaa', marginBottom: '2.5rem', textAlign: 'center' }}>
         Where Scripture Meets Scroll
