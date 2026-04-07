@@ -1,0 +1,10 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.faithfeed.app",
+    "sha256_cert_fingerprints": [
+      "8D:86:13:6B:0C:A5:B6:D6:B8:96:A0:92:AF:88:64:D3:95:B2:C2:8E:3C:D8:CD:EE:20:73:BB:1D:9C:A8:EA:50"
+    ]
+  }
+}]
