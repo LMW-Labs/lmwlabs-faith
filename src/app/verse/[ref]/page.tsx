@@ -14,8 +14,8 @@ async function fetchVerse(encodedRef: string) {
     .from('bible_verses')
     .select('text, book_name, chapter, verse')
     .eq('book_name', book)
-    .eq('chapter', parseInt(chapter))
-    .eq('verse', parseInt(verse))
+    .eq('chapter_number', parseInt(chapter))
+    .eq('verse_number', parseInt(verse))
     .single()
 
   return data

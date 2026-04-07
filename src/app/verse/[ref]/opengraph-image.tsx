@@ -14,7 +14,7 @@ async function fetchVerse(decoded: string): Promise<string | null> {
     const supabaseKey = process.env.FAITHFEED_SUPABASE_ANON_KEY
     if (!supabaseUrl || !supabaseKey) return null
 
-    const url = `${supabaseUrl}/rest/v1/bible_verses?book_name=eq.${encodeURIComponent(book)}&chapter=eq.${chapter}&verse=eq.${verse}&select=text&limit=1`
+    const url = `${supabaseUrl}/rest/v1/bible_verses?book_name=eq.${encodeURIComponent(book)}&chapter_number=eq.${chapter}&verse_number=eq.${verse}&select=text&limit=1`
     const res = await fetch(url, {
       headers: { apikey: supabaseKey, Authorization: `Bearer ${supabaseKey}` },
     })
