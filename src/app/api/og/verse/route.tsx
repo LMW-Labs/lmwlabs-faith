@@ -8,9 +8,10 @@ export async function GET(req: NextRequest) {
   const ref  = searchParams.get('ref')  ?? ''
   const text = searchParams.get('text') ?? ''
 
-  const display  = text || ref
-  const fontSize = display.length > 280 ? 20
-                 : display.length > 160 ? 24
+  // Slice before render so satori never sees unbounded text
+  const display  = (text || ref).slice(0, 320)
+  const fontSize = display.length > 240 ? 20
+                 : display.length > 140 ? 24
                  : 28
 
   return new ImageResponse(
@@ -25,12 +26,11 @@ export async function GET(req: NextRequest) {
           position: 'relative',
         }}
       >
-        {/* Decorative background */}
         <div style={{ position: 'absolute', inset: 0, display: 'flex', background: 'radial-gradient(circle at 85% 85%, rgba(201,168,76,0.18) 0%, transparent 55%)' }} />
         <div style={{ position: 'absolute', inset: 0, display: 'flex', background: 'radial-gradient(circle at 10% 5%, rgba(45,27,105,0.35) 0%, transparent 50%)' }} />
         <div style={{ position: 'absolute', inset: 10, border: '2px solid rgba(201,168,76,0.5)', borderRadius: 20, display: 'flex' }} />
 
-        {/* Verse content */}
+        {/* Verse text — centred in remaining space */}
         <div
           style={{
             flex: 1,
@@ -46,7 +46,7 @@ export async function GET(req: NextRequest) {
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              maxWidth: 1040,
+              width: 1040,
             }}
           >
             <div
@@ -55,7 +55,9 @@ export async function GET(req: NextRequest) {
                 color: '#ffffff',
                 lineHeight: 1.6,
                 textAlign: 'center',
-                maxWidth: 1040,
+                whiteSpace: 'pre-wrap',
+                width: 1040,
+                padding: '0 4px',
               }}
             >
               {display}

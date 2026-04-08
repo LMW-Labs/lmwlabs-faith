@@ -8,8 +8,9 @@ export async function GET(req: NextRequest) {
   const author  = searchParams.get('author')  ?? 'FaithFeed'
   const content = searchParams.get('content') ?? ''
 
+  // Slice before render so satori never sees unbounded text
   const display  = content.slice(0, 280) + (content.length > 280 ? '…' : '')
-  const fontSize = display.length > 200 ? 24 : 28
+  const fontSize = display.length > 200 ? 22 : 26
 
   return new ImageResponse(
     (
@@ -23,12 +24,10 @@ export async function GET(req: NextRequest) {
           position: 'relative',
         }}
       >
-        {/* Decorative background */}
         <div style={{ position: 'absolute', inset: 0, display: 'flex', background: 'radial-gradient(circle at 85% 85%, rgba(201,168,76,0.18) 0%, transparent 55%)' }} />
         <div style={{ position: 'absolute', inset: 0, display: 'flex', background: 'radial-gradient(circle at 10% 5%, rgba(45,27,105,0.35) 0%, transparent 50%)' }} />
         <div style={{ position: 'absolute', inset: 10, border: '2px solid rgba(201,168,76,0.5)', borderRadius: 20, display: 'flex' }} />
 
-        {/* Post content */}
         <div
           style={{
             flex: 1,
@@ -64,13 +63,15 @@ export async function GET(req: NextRequest) {
 
           <div style={{ height: 1, background: 'rgba(255,255,255,0.1)', marginBottom: 28, display: 'flex' }} />
 
-          {/* Body text */}
+          {/* Post body */}
           <div
             style={{
               fontSize,
               color: 'rgba(255,255,255,0.88)',
               lineHeight: 1.6,
-              maxWidth: 1040,
+              whiteSpace: 'pre-wrap',
+              width: 1040,
+              padding: '0 4px',
             }}
           >
             {display}
