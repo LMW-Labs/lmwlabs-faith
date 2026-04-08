@@ -41,7 +41,7 @@ export default async function Image({ params }: { params: Promise<{ ref: string 
         {/* Opening quote mark */}
         <div style={{ position: 'absolute', top: 20, left: 55, fontSize: 80, color: 'rgba(201,168,76,0.3)', lineHeight: 1, display: 'flex' }}>"</div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 1040 }}>
           <OgText fontSize={fontSize} style={{ textAlign: 'center', justifyContent: 'center' }}>
             {display}
           </OgText>

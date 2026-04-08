@@ -3,7 +3,7 @@
  *
  * Satori rules enforced here so individual cards never need to remember them:
  *  - Every element needs display:'flex' (satori ignores block layout)
- *  - No width:'100%' on text — use explicit maxWidth in px
+ *  - No width:'100%' on text — use explicit width in px (maxWidth is ignored by satori)
  *  - wordBreak + overflowWrap required for text wrapping
  *  - No position:absolute on text containers (breaks satori flow)
  */
@@ -97,7 +97,7 @@ export function OgText({
       style={{
         display: 'flex',
         flexWrap: 'wrap',
-        maxWidth: OG_CONTENT_WIDTH,
+        width: OG_CONTENT_WIDTH,
         color,
         fontSize,
         lineHeight: 1.6,
