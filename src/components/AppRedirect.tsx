@@ -22,7 +22,7 @@ export default function AppRedirect({ deepLink }: Props) {
       window.location.href = intentUri
     } else if (isIOS) {
       window.location.href = deepLink
-      setTimeout(() => { window.location.href = APP_STORE }, 1500)
+      // App Store not live yet — no fallback redirect
     }
     // Desktop: just show the page (download buttons below)
   }, [deepLink])
@@ -69,21 +69,20 @@ export default function AppRedirect({ deepLink }: Props) {
         Download on Google Play
       </a>
 
-      <a
-        href={APP_STORE}
+      <span
         style={{
           background: 'transparent',
-          color: '#C9A84C',
+          color: 'rgba(201,168,76,0.45)',
           padding: '0.85rem 2rem',
           borderRadius: 8,
           fontWeight: 700,
-          textDecoration: 'none',
-          border: '1px solid #C9A84C',
+          border: '1px solid rgba(201,168,76,0.3)',
           fontSize: '1rem',
+          cursor: 'default',
         }}
       >
-        Download on App Store
-      </a>
+        App Store — Coming Soon
+      </span>
     </main>
   )
 }
