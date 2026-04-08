@@ -3,8 +3,9 @@
  *
  * Satori rules enforced here so individual cards never need to remember them:
  *  - Every element needs display:'flex' (satori ignores block layout)
- *  - No width:'100%' on text — use explicit width in px (maxWidth is ignored by satori)
- *  - wordBreak + overflowWrap required for text wrapping
+ *  - NEVER use width:'100%' or maxWidth on text — satori ignores both
+ *  - Text wrapping ONLY works by splitting into word spans + flexWrap:'wrap'
+ *    on the container. Satori treats a text string as one unbreakable node.
  *  - No position:absolute on text containers (breaks satori flow)
  */
 
@@ -78,8 +79,11 @@ export function OgCard({ children, logoData }: OgCardProps) {
 }
 
 /**
- * Satori-safe text block. Always wraps correctly.
- * Use this instead of a raw <div> for any text content in OG images.
+ * Satori-safe text block that actually wraps.
+ *
+ * Satori cannot wrap a plain text string — it treats the whole string as one
+ * inline node. The only reliable fix is to split into words and let flexWrap
+ * handle line breaks across word-span flex items.
  */
 export function OgText({
   children,
@@ -92,21 +96,28 @@ export function OgText({
   color?: string
   style?: React.CSSProperties
 }) {
+  const words = String(children ?? '')
+    .split(/\s+/)
+    .filter(Boolean)
+
   return (
     <div
       style={{
         display: 'flex',
-        flexDirection: 'column',
+        flexWrap: 'wrap',
         width: OG_CONTENT_WIDTH,
+        gap: `${Math.round(fontSize * 0.35)}px`,
         color,
         fontSize,
-        lineHeight: 1.6,
-        wordBreak: 'break-word',
-        overflowWrap: 'anywhere',
+        lineHeight: 1.5,
         ...style,
       }}
     >
-      {children}
+      {words.map((word, i) => (
+        <span key={i} style={{ display: 'flex' }}>
+          {word}
+        </span>
+      ))}
     </div>
   )
 }

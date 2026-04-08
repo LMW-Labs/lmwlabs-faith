@@ -5,8 +5,9 @@ import AppRedirect from '@/components/AppRedirect'
 type Props = { params: Promise<{ ref: string }> }
 
 async function fetchVerse(encodedRef: string) {
-  const ref = decodeURIComponent(encodedRef) // e.g. "John 3:16"
-  const parts = ref.match(/^(.+?)\s+(\d+):(\d+)$/)
+  let ref = decodeURIComponent(encodedRef)
+  if (ref.includes('%')) { try { ref = decodeURIComponent(ref) } catch {} }
+  const parts = ref.match(/^(.+?)\s+(\d+):(\d+)/)
   if (!parts) return null
 
   const [, book, chapter, verse] = parts
