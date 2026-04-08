@@ -7,7 +7,8 @@ export const contentType = 'image/png'
 
 async function fetchVerse(decoded: string): Promise<string | null> {
   try {
-    const parts = decoded.match(/^(.+?)\s+(\d+):(\d+)$/)
+    // Allow verse ranges like "3:5-6" — grab the starting verse number only
+    const parts = decoded.match(/^(.+?)\s+(\d+):(\d+)/)
     if (!parts) return null
     const [, book, chapter, verse] = parts
 
@@ -29,11 +30,17 @@ async function fetchVerse(decoded: string): Promise<string | null> {
 }
 
 export default async function Image({ params }: { params: Promise<{ ref: string }> }) {
-  const { ref }                  = await params
-  const decoded                  = decodeURIComponent(ref)
-  const [verseText, logoData]    = await Promise.all([fetchVerse(decoded), loadOgLogo()])
-  const display                  = verseText ?? decoded
-  const fontSize                 = display.length > 300 ? 22 : 28
+  const { ref } = await params
+
+  // Some sharing platforms double-encode the URL — decode twice if needed
+  let decoded = decodeURIComponent(ref)
+  if (decoded.includes('%')) {
+    try { decoded = decodeURIComponent(decoded) } catch {}
+  }
+
+  const [verseText, logoData] = await Promise.all([fetchVerse(decoded), loadOgLogo()])
+  const display               = verseText ?? decoded
+  const fontSize              = display.length > 300 ? 22 : 28
 
   return new ImageResponse(
     (
