@@ -4,7 +4,7 @@ import AppRedirect from '@/components/AppRedirect'
 
 type Props = { params: Promise<{ ref: string }> }
 
-async function fetchVerse(encodedRef: string) {
+async function fetchVerseText(encodedRef: string): Promise<string | null> {
   let ref = decodeURIComponent(encodedRef)
   if (ref.includes('%')) { try { ref = decodeURIComponent(ref) } catch {} }
   const parts = ref.match(/^(.+?)\s+(\d+):(\d+)/)
@@ -13,37 +13,44 @@ async function fetchVerse(encodedRef: string) {
   const [, book, chapter, verse] = parts
   const { data } = await getFaithfeedSupabase()
     .from('bible_verses')
-    .select('text, book_name, chapter_number, verse_number')
+    .select('text')
     .eq('book_name', book)
     .eq('chapter_number', parseInt(chapter))
     .eq('verse_number', parseInt(verse))
     .single()
 
-  return data
+  return data?.text ?? null
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { ref } = await params
-  const decoded = decodeURIComponent(ref)
-  const verse = await fetchVerse(ref)
+  const { ref }  = await params
+  let decoded    = decodeURIComponent(ref)
+  if (decoded.includes('%')) { try { decoded = decodeURIComponent(decoded) } catch {} }
 
-  const text = verse?.text?.slice(0, 200) ?? 'Read this verse on FaithFeed'
-  const title = `${decoded} — FaithFeed`
+  const verseText = await fetchVerseText(ref)
+  const text      = verseText ?? 'Read this verse on FaithFeed'
+  const title     = `${decoded} — FaithFeed`
+
+  const imageUrl = new URL('/api/og/verse', 'https://lmwlabs.faith')
+  imageUrl.searchParams.set('ref', decoded)
+  imageUrl.searchParams.set('text', verseText ?? '')
 
   return {
     title,
-    description: `"${text}"`,
+    description: `"${text.slice(0, 200)}"`,
     openGraph: {
       title,
-      description: `"${text}"`,
+      description: `"${text.slice(0, 200)}"`,
       url: `https://lmwlabs.faith/verse/${ref}`,
       siteName: 'FaithFeed',
       type: 'article',
+      images: [{ url: imageUrl.toString(), width: 1200, height: 630 }],
     },
     twitter: {
       card: 'summary_large_image',
       title,
-      description: `"${text}"`,
+      description: `"${text.slice(0, 200)}"`,
+      images: [imageUrl.toString()],
     },
   }
 }

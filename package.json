@@ -17,6 +17,7 @@
     "@tailwindcss/postcss": "^4.1.18",
     "@types/node": "^25.0.6",
     "@types/react": "^19.2.8",
+    "@vercel/og": "^0.11.1",
     "autoprefixer": "^10.4.23",
     "gray-matter": "^4.0.3",
     "jspdf": "^4.0.0",
