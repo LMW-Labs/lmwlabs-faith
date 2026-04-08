@@ -1,5 +1,5 @@
 import { ImageResponse }              from 'next/og'
-import { OgCard, OgText, OgSize, loadOgLogo, OG_SIZE } from '@/lib/og-layout'
+import { OgCard, OgText, loadOgLogo, OG_SIZE } from '@/lib/og-layout'
 
 export const runtime     = 'nodejs'
 export const size        = OG_SIZE
