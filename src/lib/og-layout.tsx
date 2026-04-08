@@ -96,13 +96,13 @@ export function OgText({
     <div
       style={{
         display: 'flex',
-        flexWrap: 'wrap',
+        flexDirection: 'column',
         width: OG_CONTENT_WIDTH,
         color,
         fontSize,
         lineHeight: 1.6,
         wordBreak: 'break-word',
-        overflowWrap: 'break-word',
+        overflowWrap: 'anywhere',
         ...style,
       }}
     >
