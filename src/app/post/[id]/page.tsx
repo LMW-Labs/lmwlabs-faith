@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       url: `https://lmwlabs.faith/post/${id}`,
       siteName: 'FaithFeed',
       type: 'article',
-      images: [{ url: imageUrl.toString(), width: 1200, height: 630 }],
+      images: [{ url: imageUrl.toString(), width: 1080, height: 1080 }],
     },
     twitter: {
       card: 'summary_large_image',

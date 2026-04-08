@@ -3,6 +3,11 @@ import { NextRequest } from 'next/server'
 
 export const runtime = 'edge'
 
+const W = 1080
+const H = 1080
+const PAD = 80
+const TEXT_W = W - PAD * 2  // 920
+
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl
   const author  = searchParams.get('author')  ?? 'FaithFeed'
@@ -16,8 +21,8 @@ export async function GET(req: NextRequest) {
     (
       <div
         style={{
-          width: 1200,
-          height: 630,
+          width: W,
+          height: H,
           display: 'flex',
           flexDirection: 'column',
           background: '#0D1117',
@@ -70,7 +75,7 @@ export async function GET(req: NextRequest) {
               color: 'rgba(255,255,255,0.88)',
               lineHeight: 1.6,
               whiteSpace: 'pre-wrap',
-              width: 1040,
+              width: TEXT_W,
               padding: '0 4px',
             }}
           >
@@ -95,6 +100,6 @@ export async function GET(req: NextRequest) {
         </div>
       </div>
     ),
-    { width: 1200, height: 630 }
+    { width: W, height: H }
   )
 }
